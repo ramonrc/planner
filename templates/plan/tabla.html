@@ -1,0 +1,41 @@
+{% extends "plan/index.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+{% if ol%}
+        <h3><a href="/goremo/captura/objetivo/">Objetivos</a></h3>
+        {% for ob in ol %}
+        <table border=1>
+	<caption>{{ ob.nombre }}</caption>
+	    <td>
+	      {% for es in ob.hijas %}
+              <table border=1><caption>{{ es }}</caption>
+		{% for pr in es.hijas_set.all %}
+		<tr>{{ pr.nombre }}</tr>
+		{% endfor %}
+		</table>
+	      </table>
+	      {% endfor %}
+	    </td>
+        </table>
+        {% endfor %}
+{% else %}
+    <ul>
+    {% for obj in object_list %}
+        <li><a href="/goremo/captura/objetivo/{{ obj.id }}/">{{ obj.id }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+</div>
+{% endblock %}
+

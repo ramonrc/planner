@@ -1,0 +1,52 @@
+{% extends "plan/index.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+      <a href="/goremo/captura">
+        Captura
+      </a>
+       |
+       <a href="../">
+        &rsaquo;Atras
+      </a>
+    </div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+{% if ol %}
+        <h3><a href="/goremo/admin/captura/objetivo/">Objetivos</a></h3>
+        {% for ob in ol %}
+	<div class="module">
+        <table border=1>
+	<caption>{{ ob.nombre }}</caption>
+	    <tr><td>
+	      {% for me in ob.hijas %}<b>{{ me.nombre }}</b><p>Avance: {{me.avance}}</td><td><ul>
+		  {% for es in me.hijas%}<li>{{ es.nombre }}</li><ul>
+		      {% for pr in es.hijas%}<li>{{ pr.nombre }}({{pr.avance}})</li><ul>
+		          {% for ac in pr.hijas%}<li><a href="/goremo/admin/captura/accion/{{ac.id}}/">{{ ac.nombre }}</a>({{ac.avance}})</li>{% endfor %}</ul>
+		      {% endfor %}</ul>
+		  {% endfor %}</ul>
+	      {% endfor %}
+	    </td></tr>
+        </table>
+	</div>
+        {% endfor %}
+{% else %}
+    <ul>
+    {% for obj in object_list %}
+        <li><a href="/goremo/captura/objetivo/{{ obj.id }}/">{{ obj.id }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,49 @@
+{% extends "plan/index.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+<h1>Seguimiento de Accion</h1>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="/goremo/captura/accion_edit/{{ accion_id }}/" method="post">
+{% csrf_token %}
+{%for f in form.management_form%}
+    {{f}}
+{%endfor%}
+<table>
+    <tr>
+    {% for field in form.forms.0 %}
+        {% if not field.is_hidden %}
+            <th>{{field.label}}</th>
+        {% endif %}
+    {% endfor %}
+    </tr>
+    {%for f in form.forms%}
+        <tr>
+        {%for field in f%} 
+            {% if not field.is_hidden %}
+                <td valign="bottom">{{field}}</td>
+            {%else%}
+                {{field}}
+            {% endif %}
+        {%endfor%}
+        </tr>
+    {%endfor%}
+</table>
+<table>
+{{ accion_form.as_table }}
+{{ accion_pro.as_table }}
+{{ accion_form.management_form }}</table>
+<input type="submit" value="Save" />
+</form>
+</div>
+{% endblock %}

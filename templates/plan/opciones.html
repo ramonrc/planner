@@ -1,0 +1,31 @@
+{% extends "plan/index.html" %}
+{% load i18n admin_modify %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+{% if op %}
+	<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+        <div class="module">
+	<table>
+	<caption>Captura</caption>
+	{% for act in op %}
+        <tr><th scope="row"><a href="/goremo/admin/captura/{{ act }}/add/" class="add-another" id="add_id_objetivo" onclick="return showAddAnotherPopup(this);">{{ act|capfirst }}</a></tr></th>
+        {% endfor %}
+<!--        <tr><th scope="row"><a href="/goremo/admin/auth/user/add/" class="add-another" id="add_id_objetivo" onclick="return showAddAnotherPopup(this);">Usuario</a></tr></th> -->
+	</table>
+	</div>
+{% else %}
+        <p>No hay datos a desplegar.</p>
+{% endif %}
+</div>
+{% endblock %}
+

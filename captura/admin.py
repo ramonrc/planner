@@ -1,0 +1,96 @@
+from captura.models import telefonos_persona,objetivo,meta,estrategia,proyecto,accion,unidad_meta
+from django.contrib.auth.models import User,Group
+from django.contrib import admin
+from seguimiento.models import com_est,com_pro,com_acc
+
+class EstrChoice(admin.TabularInline):
+    model = com_est
+    extra = 0
+
+class ProyChoice(admin.TabularInline):
+    model = com_pro
+    extra = 0
+
+class AcciChoice(admin.TabularInline):
+    model = com_acc
+    extra = 0
+
+class Telefono(admin.ModelAdmin):
+    list_display = ('persona', 'numero', 'tipo')
+    list_filter = ['persona', 'tipo']
+
+class Est(admin.ModelAdmin):
+    inlines = [EstrChoice]
+    list_display = ('nombre', 'hijas')
+
+class Obj(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['nombre','descripcion']}),
+        ('Avanzado', {'fields': ['peer'], 'classes': ['collapse']})]
+    def save_model(self, request, obj, form, change): 
+	if not change:
+	    obj.autor = request.user
+        obj.save()
+    def save_formset(self, request, form, formset, change): 
+        if not hasattr(instance,'autor'):
+            instance.descripcion = request.user.pk
+        instance.save()
+        return formset.save()
+    def queryset(self, request):
+        custgroup = Group.objects.get(name="ejecutivo") 
+        if custgroup in request.user.groups.all():
+            return objetivo.objects.all()
+        return objetivo.objects.filter(autor=request.user)
+    list_display = ('nombre', 'autor', 'descripcion', 'hijas')
+
+class Met(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['nombre','descripcion','padre','fecha',('cuantificador','unidad')]})]
+    def save_model(self, request, obj, form, change): 
+	if not change:
+	    obj.autor = request.user
+        obj.save()
+    def save_formset(self, request, form, formset, change): 
+        if not hasattr(instance,'autor'):
+            instance.descripcion = request.user.pk
+        instance.save()
+        return formset.save()
+    def queryset(self, request):
+        custgroup = Group.objects.get(name="ejecutivo") 
+        if custgroup in request.user.groups.all():
+            return meta.objects.all()
+        return meta.objects.filter(autor=request.user)
+    list_display = ('nombre', 'avance', 'fecha', 'hijas')
+
+class Pro(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['nombre','descripcion','padre','responsable']}),
+        ('Avanzado', {'fields': ['necesita','necesario'], 'classes': ['collapse']})]
+    inlines = [ProyChoice]
+    def queryset(self, request):
+        custgroup = Group.objects.get(name="ejecutivo") 
+        if custgroup in request.user.groups.all():
+            return proyecto.objects.all()
+        return proyecto.objects.filter(responsable=request.user)
+    list_display = ('nombre', 'responsable', 'avance', 'hijas')
+
+class Act(admin.ModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['nombre','descripcion','padre','responsable','fecha','avance']}),
+        ('Avanzado', {'fields': ['necesita','necesario'], 'classes': ['collapse']})]
+    inlines = [AcciChoice]
+    def queryset(self, request):
+        custgroup = Group.objects.get(name="ejecutivo") 
+        if custgroup in request.user.groups.all():
+            return accion.objects.all()
+        return accion.objects.filter(responsable=request.user)
+    list_display = ('nombre', 'responsable', 'avance', 'fecha')
+
+admin.site.register(objetivo, Obj)
+admin.site.register(meta, Met)
+admin.site.register(estrategia, Est)
+admin.site.register(proyecto, Pro)
+#admin.site.register(accion)
+admin.site.register(accion, Act)
+#admin.site.register(unidad_meta)
+admin.site.register(telefonos_persona, Telefono)
