@@ -34,6 +34,22 @@ class objetivo(models.Model):
                 for no in meta.objects.filter(id__contains=o):
                     results.append(no)
         return results
+    def semaforo(self):
+        from django.db import connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT id
+            FROM captura_meta
+            WHERE %s IN ( padre_id )
+            """, [self.id])
+        for hija in cursor.fetchall():
+            for hij in hija:
+                for hi in meta.objects.filter(id__contains=hij):
+                    if ( hi.semaforo == "alto" ):
+                        return hi.semaforo
+                    if ( hi.semaforo == "amarillo" ):
+                        return hi.semaforo
+        return "siga"
     def __unicode__(self):
         return self.nombre
 
@@ -87,6 +103,21 @@ class meta(models.Model):
         if ( count == 0 ):
             return "no hay accion"
         return av/count
+    def semaforo(self):
+        from django.db import connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT id 
+            FROM captura_estrategia
+            WHERE %s IN ( padre_id )
+            """, [self.id])
+        for hij in cursor.fetchall():
+            for hi in hij:
+                if ( hi.semaforo == "alto" ):
+                    return "alto"
+                if ( hi.semaforo == "amarillo" ):
+                    return "amarillo"
+        return "siga"
     def __unicode__(self):
         return self.nombre
 
@@ -108,6 +139,21 @@ class estrategia(models.Model):
                 for no in proyecto.objects.filter(id__contains=o):
                     results.append(no)
         return results
+    def semaforo(self):
+        from django.db import connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT id 
+            FROM captura_estrategia
+            WHERE %s IN ( padre_id )
+            """, [self.id])
+        for hij in cursor.fetchall():
+            for hi in hij:
+                if ( hi.avance == "alto" ):
+                    return "alto"
+                if ( hi.avance == "amarillo" ):
+                    return "amarillo"
+        return "siga"
     def __unicode__(self):
         return self.nombre
 

@@ -1,7 +1,7 @@
 {% extends "plan/index.html" %}
 {% load i18n %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}css/dashboard.css" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -11,22 +11,64 @@
 {% endblock %}
 
 {% block content %}
+<style type="text/css">
+a {
+	color: #00CCFF;
+}
+a:visited {
+	color: #0066CC;
+}
+a:active {
+	color: #00FFFF;
+}
+a:hover {
+	color: #66FFCC;
+}
+.auto-style1 {
+	font-size: xx-large;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.auto-style5 {
+	text-align: right;
+}
+.auto-style6 {
+	border: 1px solid #FFFF00;
+}
+.auto-style7 {
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: small;
+}
+.auto-style8 {
+	margin-left: 0px;
+}
+.auto-style9 {
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	font-size: medium;
+	border: 1px solid #00FF00;
+}
+.auto-style10 {
+	border: 1px solid #00FF00;
+}
+.auto-style11 {
+	font-size: medium;
+}
+</style>
 <div id="content-main">
 
 {% if ol%}
         <h3><a href="/goremo/captura/objetivo/">Objetivos</a></h3>
-        <table border=1>
-	<hr><th>Nombre</th><th>Descripci&oacute;n</th><th>Metas</th></hr>
+        <table class="auto-style6">
+	<hr><th class="auto-style9">Nombre</th><th class="auto-style9">Descripci&oacute;n</th><th class="auto-style9">Metas</th></hr>
         {% for ob in ol|first %}
 	    <tr>
-            <td>{{ ob.nombre }}</td>
-	    <td>{{ ob.descripcion }}</td>
-	    <td><ul>{% for hi in ob.hijas %}<li>{{ hi.nombre }}</li>{% endfor %}</ul></td>
+            <td class="auto-style9">{{ ob.nombre }}</td>
+	    <td class="auto-style9">{{ ob.descripcion }}</td>
+	    <td class="auto-style9"><ul>{% for hi in ob.hijas %}<li class="auto-style7">{{ hi.nombre }}</li>{% endfor %}</ul></td>
 	    </tr>
         {% endfor %}
         </table>
         <h3><a href="/goremo/captura/meta/">Metas</a></h3>
-        <table border=1>
+        <table border=1px solid #00FF00>
 	<hr><th>Nombre</th><th>Avance</th><th>Estrategias</th></hr>
         {% for me in ol.1 %}
 	    <tr>
@@ -37,7 +79,7 @@
         {% endfor %}
         </table>
         <h3><a href="/goremo/captura/estrategia/">Estrategias</a></h3>
-        <table border=1>
+        <table border=1px solid #00FF00>
 	<hr><th>Nombre</th><th>Descripci&oacute;n</th><th>Proyectos</th></hr>
         {% for es in ol.2 %}
 	    <tr>
@@ -48,7 +90,7 @@
         {% endfor %}
         </table>
         <h3><a href="/goremo/captura/proyecto/">Proyectos</a></h3>
-        <table border=1>
+        <table border=1px solid #00FF00>
 	<hr><th>Nombre</th><th>Avance</th><th>Acciones</th></hr>
         {% for pr in ol.3 %}
 	    <tr>
@@ -59,7 +101,7 @@
         {% endfor %}
         </table>
         <h3><a href="/goremo/captura/accion/">Acciones</a></h3>
-        <table border=1>
+        <table border=1px solid #00FF00>
 	<hr><th>Nombre</th><th>Avance</th><th>Descripci&oacute;n</th></hr>
         {% for ac in ol.4 %}
             <tr>

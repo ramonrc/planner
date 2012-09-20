@@ -1,0 +1,74 @@
+﻿{% extends "plan/base.html" %}
+{% block content %}
+<a href="/goremo/"><img id="img2" alt="regresar" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img2',/*url*/'button3A.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img2',/*url*/'button38.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img2',/*url*/'button39.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img2',/*url*/'button39.jpg')" src="/static/admin/grm/button38.jpg" style="border: 0" width="100" /></a>
+<p class="auto-style12">
+<table style="width: 83%">
+	<tr>
+<span class="auto-style1">detalle de objetivo <em>{{ ob.0.nombre }}</em>&nbsp;
+</span>
+	</tr>
+</table>
+</p>
+<p class="auto-style12" style="width: 980px">en esta pantalla el ejecutivo (<em>{{ user }}</em>) podrá 
+revisar los detalles de progreso de un objetivo en específico. Los campos son de 
+solo lectura. El correo electrónico del manager se proporciona como hipervinculo en 
+el nombre.</p>
+{% if ob %}
+		<table class="auto-style15" style="width: 83%">
+			<tr>
+				<td class="auto-style17" style="width: 1631px">
+				<a href="/goremo/objetivo/nuevo">Nuevo Objetivo</a></td>
+				<td class="auto-style14" style="width: 3674px">
+				<a href="mailto:{{ ob.0.autor.email }}">{{ ob.0.autor.get_full_name }}</a></td>
+				<td class="auto-style16" style="width: 176px">
+				<img alt="" class="auto-style13" height="50" src="/static/admin/grm/{{ ob.0.semaforo }}.png" width="150" /></td>
+			</tr>
+			</table>
+		<table class="auto-style15" style="width: 83%">
+{% for m in ob.0.hijas %}
+			<tr>
+				<td class="auto-style9">
+				<table style="width: 94%" align="right">
+					<tr>
+						<td class="auto-style16" style="width: 818px">{{ ob.0.id }}.{{ m.id }}.- {{ m.nombre }}</td>
+						<td class="auto-style16" style="width: 42px">
+						<img alt="" height="40" src="/static/admin/grm/siga.png" width="120" /></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+						<table style="width: 93%" align="right">
+{% for e in m.hijas %}
+							<tr>
+								<td class="auto-style16" style="width: 832px">
+								{{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</td>
+								<td class="auto-style16">
+								<img alt="" class="auto-style8" height="35" src="/static/admin/grm/amarillo.png" width="105" /></td>
+							</tr>
+							<tr>
+								<td colspan="2" class="auto-style18">
+								<table style="width: 96%" align="right">
+{% for p in e.hijas %}
+									<tr>
+										<td class="auto-style16" style="width: 862px">
+										{{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</td>
+										<td class="auto-style16">
+										<img alt="" height="30" src="/static/admin/grm/amarillo.png" width="90" /></td>
+									</tr>
+{% endfor %}
+								</table>
+								</td>
+							</tr>
+{% endfor %}
+						</table>
+						</td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+{% endfor %}
+		</table>
+{% endif %}		
+</body>
+
+</html>
+{% endblock %}

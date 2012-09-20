@@ -7,13 +7,37 @@ from django.template import RequestContext
 from models import *
 
 @login_required(login_url='/goremo/accounts/login/')
-def lista(request):
+#@login_required()
+def inicio(request):
     custgroup = Group.objects.get(name="ejecutivo") 
     if custgroup in request.user.groups.all():
+        ps = objetivo.objects.order_by("id")
+        return render_to_response('plan/ejecutivo.html', {'ol' : ps}, context_instance=RequestContext(request))
+    custgroup = Group.objects.get(name="manager") 
+    if custgroup in request.user.groups.all():
         ps = [objetivo.objects.order_by("id"), meta.objects.order_by("id"), estrategia.objects.order_by("id"), proyecto.objects.order_by("id"), accion.objects.order_by("id")]
-        return render_to_response('plan/listas.html', {'ol' : ps})
+        return render_to_response('propuesta/manager.html', {'ol' : ps})
+    custgroup = Group.objects.get(name="administrador") 
+    if custgroup in request.user.groups.all():
+        ps = [objetivo.objects.order_by("id"), meta.objects.order_by("id"), estrategia.objects.order_by("id"), proyecto.objects.order_by("id"), accion.objects.order_by("id")]
+        return render_to_response('propuesta/admin.html', {'ol' : ps})
+    custgroup = Group.objects.get(name="lider") 
+    if custgroup in request.user.groups.all():
+        ps = [objetivo.objects.order_by("id"), meta.objects.order_by("id"), estrategia.objects.order_by("id"), proyecto.objects.order_by("id"), accion.objects.order_by("id")]
+        return render_to_response('propuesta/seguimiento-proyecto.html', {'ol' : ps})
+    custgroup = Group.objects.get(name="responsable") 
+    if custgroup in request.user.groups.all():
+        ps = [objetivo.objects.order_by("id"), meta.objects.order_by("id"), estrategia.objects.order_by("id"), proyecto.objects.order_by("id"), accion.objects.order_by("id")]
+        return render_to_response('propuesta/seguimiento-accion.html', {'ol' : ps})
     ps = objetivo.objects.filter(autor=request.user)
-    return render_to_response('plan/panel.html', {'ol' : ps})
+    return render_to_response('admin/', {'ol' : ps})
+
+def objet(request, ob_id):
+    custgroup = Group.objects.get(name="ejecutivo")
+    if custgroup in request.user.groups.all():
+        ps = objetivo.objects.filter(pk=ob_id)
+        return render_to_response('plan/ejecutivo-objetivo.html', {'ob' : ps}, context_instance=RequestContext(request))
+    return HttpResponse("ob_id")
 
 def opt(request):
     custgroup = Group.objects.get(name="manager") 

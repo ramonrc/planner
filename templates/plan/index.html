@@ -1,9 +1,9 @@
-{% extends "admin/base.html" %}
+{% extends "admin/base.html" %} 
 {% load i18n %}
-
+{% block extrastyle %}<body style="color: #FFFFFF; background-color: #333333">{% endblock %}
 {% block title %}{{ title }} | {% trans 'Planeaci&oacute;n estrat&eacute;gica' %}{% endblock %}
 {% block branding %}
-<h1 id="site-name">{% trans 'Planner' %}</h1>
+<p><img alt="http://www.goremo.mx" height="38" src='/static/admin/grm/grm.gif' width="98" />&nbsp;&nbsp;&nbsp;
+<span>planeacion tactica <em>(manager)</em></span></p>
 {% endblock %}
-
 {% block nav-global %}{% endblock %}
