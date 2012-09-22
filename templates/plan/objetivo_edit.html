@@ -1,4 +1,4 @@
-{% extends "plan/index.html" %}
+{% extends "plan/base.html" %}
 {% load i18n %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
@@ -11,13 +11,13 @@
 
 {% block content %}
 <div id="content-main">
-<h1>Seguimiento de Objetivo</h1>
+<h1>Seguimiento de objetivo</h1>
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <form action="/goremo/captura/objetivo_edit/{{ objetivo_id }}/" method="post">
 {% csrf_token %}
 <table>
-{{ objetivo_form.as_table }}
+{{ of }}
 </table>
 <input type="submit" value="Save" />
 </form>

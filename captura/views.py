@@ -3,8 +3,13 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.shortcuts import render_to_response,redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from django.contrib.auth import logout
 from django.template import RequestContext
 from models import *
+
+def logout_page(request):
+   logout(request)
+   return HttpResponseRedirect('/goremo/')
 
 @login_required(login_url='/goremo/accounts/login/')
 #@login_required()
@@ -15,8 +20,8 @@ def inicio(request):
         return render_to_response('plan/ejecutivo.html', {'ol' : ps}, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="manager") 
     if custgroup in request.user.groups.all():
-        ps = [objetivo.objects.order_by("id"), meta.objects.order_by("id"), estrategia.objects.order_by("id"), proyecto.objects.order_by("id"), accion.objects.order_by("id")]
-        return render_to_response('propuesta/manager.html', {'ol' : ps})
+        ps = objetivo.objects.filter(autor=request.user).order_by("id")
+        return render_to_response('plan/manager.html', {'ol' : ps}, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="administrador") 
     if custgroup in request.user.groups.all():
         ps = [objetivo.objects.order_by("id"), meta.objects.order_by("id"), estrategia.objects.order_by("id"), proyecto.objects.order_by("id"), accion.objects.order_by("id")]
@@ -30,13 +35,29 @@ def inicio(request):
         ps = [objetivo.objects.order_by("id"), meta.objects.order_by("id"), estrategia.objects.order_by("id"), proyecto.objects.order_by("id"), accion.objects.order_by("id")]
         return render_to_response('propuesta/seguimiento-accion.html', {'ol' : ps})
     ps = objetivo.objects.filter(autor=request.user)
-    return render_to_response('admin/', {'ol' : ps})
+    return render_to_response('plan/index.html', {'ol' : ps})
 
 def objet(request, ob_id):
     custgroup = Group.objects.get(name="ejecutivo")
     if custgroup in request.user.groups.all():
         ps = objetivo.objects.filter(pk=ob_id)
         return render_to_response('plan/ejecutivo-objetivo.html', {'ob' : ps}, context_instance=RequestContext(request))
+    custgroup = Group.objects.get(name="manager")
+    if custgroup in request.user.groups.all():
+        ps = objetivo.objects.filter(pk=ob_id)
+        return render_to_response('plan/manager-objetivo.html', {'ob' : ps}, context_instance=RequestContext(request))
+    return HttpResponse("ob_id")
+
+def edito(request, ob_id):
+    custgroup = Group.objects.get(name="ejecutivo")
+    if custgroup in request.user.groups.all():
+        ob = objetivo.objects.filter(pk=ob_id)
+        od = objetivoFrom()
+        return render_to_response('plan/objetivo_edit.html', {'of' : od}, context_instance=RequestContext(request))
+    custgroup = Group.objects.get(name="manager")
+    if custgroup in request.user.groups.all():
+        ps = objetivo.objects.filter(pk=ob_id)
+        return render_to_response('plan/objetivo_edit.html', {'ob' : ps}, context_instance=RequestContext(request))
     return HttpResponse("ob_id")
 
 def opt(request):

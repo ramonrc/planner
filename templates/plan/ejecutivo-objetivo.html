@@ -1,6 +1,6 @@
 ﻿{% extends "plan/base.html" %}
 {% block content %}
-<a href="/goremo/"><img id="img2" alt="regresar" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img2',/*url*/'button3A.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img2',/*url*/'button38.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img2',/*url*/'button39.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img2',/*url*/'button39.jpg')" src="/static/admin/grm/button38.jpg" style="border: 0" width="100" /></a>
+
 <p class="auto-style12">
 <table style="width: 83%">
 	<tr>
@@ -17,9 +17,10 @@ el nombre.</p>
 		<table class="auto-style15" style="width: 83%">
 			<tr>
 				<td class="auto-style17" style="width: 1631px">
-				<a href="/goremo/objetivo/nuevo">Nuevo Objetivo</a></td>
-				<td class="auto-style14" style="width: 3674px">
+				Manager a cargo</td>
+				<td class="auto-style14" style="width: 2643px">
 				<a href="mailto:{{ ob.0.autor.email }}">{{ ob.0.autor.get_full_name }}</a></td>
+				<td class="auto-style17" style="width: 1631px">Estado del objetivo</td>
 				<td class="auto-style16" style="width: 176px">
 				<img alt="" class="auto-style13" height="50" src="/static/admin/grm/{{ ob.0.semaforo }}.png" width="150" /></td>
 			</tr>
@@ -30,7 +31,7 @@ el nombre.</p>
 				<td class="auto-style9">
 				<table style="width: 94%" align="right">
 					<tr>
-						<td class="auto-style16" style="width: 818px">{{ ob.0.id }}.{{ m.id }}.- {{ m.nombre }}</td>
+						<td class="auto-style16" style="width: 818px">Meta {{ ob.0.id }}.{{ m.id }}.- {{ m.nombre }}</td>
 						<td class="auto-style16" style="width: 42px">
 						<img alt="" height="40" src="/static/admin/grm/siga.png" width="120" /></td>
 					</tr>
@@ -40,7 +41,7 @@ el nombre.</p>
 {% for e in m.hijas %}
 							<tr>
 								<td class="auto-style16" style="width: 832px">
-								{{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</td>
+								Estrategia {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</td>
 								<td class="auto-style16">
 								<img alt="" class="auto-style8" height="35" src="/static/admin/grm/amarillo.png" width="105" /></td>
 							</tr>
@@ -50,7 +51,7 @@ el nombre.</p>
 {% for p in e.hijas %}
 									<tr>
 										<td class="auto-style16" style="width: 862px">
-										{{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</td>
+										Proyecto {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</td>
 										<td class="auto-style16">
 										<img alt="" height="30" src="/static/admin/grm/amarillo.png" width="90" /></td>
 									</tr>
@@ -68,7 +69,7 @@ el nombre.</p>
 {% endfor %}
 		</table>
 {% endif %}		
+		<a href="/goremo/admin/captura/objetivo/{{ ob.0.id }}/delete/"><img id="img3" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/button16.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/button14.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/button15.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/button15.jpg')" src="/static/admin/grm/button14.jpg" style="border: 0" width="80" /></a>
 </body>
-
 </html>
 {% endblock %}

@@ -1,0 +1,63 @@
+﻿{% extends "plan/base.html" %}
+{% block content %}
+
+<span class="auto-style1">detalle de objetivo <em>{{ ob.0.id }}</em></span>
+
+<p class="auto-style12" style="width: 879px">en esta pantalla el manager (<em>{{ user }}</em>) podrá 
+revisar los detalles de progreso de uno de sus objetivos en específico. También 
+podrá añadir, modificar o borrar metas, estrategias y proyectos.</p>
+{% if ob %}
+		<table class="auto-style15" style="width: 83%">
+			<tr>
+				<td class="auto-style17" style="width: 4117px">{{ ob.0.id}}.- {{ ob.0.nombre }}</td>
+				<td class="auto-style16" style="width: 176px">
+				<img alt="" class="auto-style13" height="50" src="/static/admin/grm/{{ ob.0.semaforo }}.png" width="150" /></td>
+			</tr>
+			</table>
+{% for m in ob.0.hijas %}
+		<table class="auto-style15" style="width: 83%">
+			<tr>
+				<td class="auto-style9">
+				<table style="width: 94%" align="right">
+					<tr>
+						<td class="auto-style16" style="width: 818px">
+						<a href="modificacion-meta.html">{{ ob.0.id }}.{{ m.id }}.- {{ m.nombre }}</a></td>
+						<td class="auto-style16" style="width: 42px">
+						<img alt="" height="40" src="/static/admin/grm/alto.png" width="120" /></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+						<table style="width: 93%" align="right">
+{% for e in m.hijas %}
+							<tr><td class="auto-style16" style="width: 832px">
+								<a href="modificacion-estrategia.html">{{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</a></td>
+								<td class="auto-style16">
+								<img alt="" class="auto-style8" height="35" src="/static/admin/grm/amarillo.png" width="105" /></td>
+							</tr>
+							<tr><td colspan="2" class="auto-style18">
+								<table style="width: 96%" align="right">
+{% for p in e.hijas %}
+									<tr><td class="auto-style16" style="width: 862px">
+										<a href="modificacion-proyecto.html">
+										  {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</a></td>
+										<td class="auto-style16">
+										<img alt="" height="30" src="/static/admin/grm/amarillo.png" width="90" /></td>
+									</tr>
+{% endfor %}
+								</table>
+							  </td>
+							</tr>
+{% endfor %}
+						</table>
+						</td>
+					</tr>
+				</table>
+				</td>
+			</tr>
+{% endfor %}
+		</table>
+{% endif %}		
+</body>
+
+</html>
+{% endblock %}
