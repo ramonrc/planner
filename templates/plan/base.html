@@ -123,7 +123,9 @@ function FP_getObjectByID(id,o) {//v1.0
 		<td>
 <span class="auto-style1">
 		<a href="/goremo/logout"><img id="img1" alt="salir" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img1',/*url*/'/static/admin/grm/salirPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img1',/*url*/'/static/admin/grm/salir.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img1',/*url*/'/static/admin/grm/salirFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img1',/*url*/'/static/admin/grm/salirFocus.jpg')" src="/static/admin/grm/salir.jpg" style="border: 0" width="100" /></a><br>
-<a href="/goremo/"><img id="img2" alt="regresar" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img2',/*url*/'/static/admin/grm/regresarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img2',/*url*/'/static/admin/grm/regresar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img2',/*url*/'/static/admin/grm/regresarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img2',/*url*/'/static/admin/grm/regresarFocus.jpg')" src="/static/admin/grm/regresar.jpg" style="border: 0" width="100" /></a>
+{% block migajas %}
+<a href="javascript:javascript:history.go(-1)"><img id="img2" alt="regresar" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img2',/*url*/'/static/admin/grm/regresarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img2',/*url*/'/static/admin/grm/regresar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img2',/*url*/'/static/admin/grm/regresarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img2',/*url*/'/static/admin/grm/regresarFocus.jpg')" src="/static/admin/grm/regresar.jpg" style="border: 0" width="100" /></a>
+{% endblock migajas %}
 </span></td>
 	</tr>
 </table>

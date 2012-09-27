@@ -1,4 +1,5 @@
 {% extends "plan/base.html" %}
+{% block migajas %}{% endblock %}
 {% block content %}
 <p class="auto-style1">objetivos</p>
 <p class="auto-style8" style="width: 1020px">Esta es la página de entrada para 
@@ -14,12 +15,12 @@ manager de su elección</p>
 		<td class="auto-style6">
 		<img alt="este valor se calcula" height="40" src="/static/admin/grm/{{ ob.semaforo }}.png" width="120" /></td>
 		<td class="auto-style10" style="width: 107px">
-		<a href="admin/captura/objetivo/{{ ob.id }}/delete/"><img id="img3" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
+		<a href="objetivo/rm/{{ ob.id }}/"><img id="imag{{ ob.id }}" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
 	</tr>
 {% endfor %}
 </table>
 {% endif %}
-<p>&nbsp;<a href="objetivo/edit/"><img id="img2" alt="añadir nuevo objetivo?" height="33" onmousedown="FP_swapImg(1,0,/*id*/'img2',/*url*/'/static/admin/grm/NuevoObjetivoPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img2',/*url*/'/static/admin/grm/NuevoObjetivo.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img2',/*url*/'/static/admin/grm/NuevoObjetivoFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img2',/*url*/'/static/admin/grm/NuevoObjetivoFocus.jpg')" src="/static/admin/grm/NuevoObjetivo.jpg" style="border: 0" width="166" /></a></p>
+<p>&nbsp;<a href="objetivo/add/"><img id="img4" alt="añadir nuevo objetivo?" height="33" onmousedown="FP_swapImg(1,0,/*id*/'img4',/*url*/'/static/admin/grm/NuevoObjetivoPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img4',/*url*/'/static/admin/grm/NuevoObjetivo.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img4',/*url*/'/static/admin/grm/NuevoObjetivoFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img4',/*url*/'/static/admin/grm/NuevoObjetivoFocus.jpg')" src="/static/admin/grm/NuevoObjetivo.jpg" style="border: 0" width="166" /></a></p>
 </body>
 
 </html>

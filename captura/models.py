@@ -18,7 +18,7 @@ class objetivo(models.Model):
     nombre = models.CharField(max_length=255,unique=True,verbose_name='Definicion')
     peer = models.ManyToManyField("self",blank=True,verbose_name='Objetivos Relacionados')
     descripcion = models.CharField(max_length=2000,blank=True,verbose_name='Descripcion')
-    autor = models.ForeignKey(User,blank=True,null=True,editable=False)
+    autor = models.ForeignKey(User,verbose_name='Responsable')
     activo = models.BooleanField(default=True)
     def hijas(self):
         from django.db import connection
@@ -64,7 +64,7 @@ class meta(models.Model):
     padre = models.ForeignKey(objetivo,verbose_name='Objetivo padre')
     fecha = models.DateField('fecha de cumplimiento')
     inicio = models.DateField('fecha de inicio',blank=True,default=datetime.date.today(),editable=False)
-    autor = models.ForeignKey(User,blank=True,null=True,editable=False)
+    autor = models.ForeignKey(User,verbose_name='Responsable') #blank=True,null=True,editable=False)
     cuantificador = models.IntegerField()
     unidad = models.ForeignKey(unidad_meta,verbose_name='Tipo de medicion')
     descripcion = models.CharField(max_length=2000,blank=True,verbose_name='Descripcion')
@@ -111,12 +111,13 @@ class meta(models.Model):
             FROM captura_estrategia
             WHERE %s IN ( padre_id )
             """, [self.id])
-        for hij in cursor.fetchall():
-            for hi in hij:
-                if ( hi.semaforo == "alto" ):
-                    return "alto"
-                if ( hi.semaforo == "amarillo" ):
-                    return "amarillo"
+        for hija in cursor.fetchall():
+            for hij in hija:
+                for hi in estrategia.objects.filter(id__contains=hij):
+                    if ( hi.semaforo == "alto" ):
+                        return "alto"
+                    if ( hi.semaforo == "amarillo" ):
+                        return "amarillo"
         return "siga"
     def __unicode__(self):
         return self.nombre
@@ -144,15 +145,16 @@ class estrategia(models.Model):
         cursor = connection.cursor()
         cursor.execute("""
             SELECT id 
-            FROM captura_estrategia
+            FROM captura_proyecto
             WHERE %s IN ( padre_id )
             """, [self.id])
-        for hij in cursor.fetchall():
-            for hi in hij:
-                if ( hi.avance == "alto" ):
-                    return "alto"
-                if ( hi.avance == "amarillo" ):
-                    return "amarillo"
+        for hija in cursor.fetchall():
+            for hij in hija:
+                for hi in proyecto.objects.filter(id__contains=hij):
+                    if ( hi.semaforo == "alto" ):
+                        return "alto"
+                    if ( hi.semaforo == "amarillo" ):
+                        return "amarillo"
         return "siga"
     def __unicode__(self):
         return self.nombre
@@ -197,6 +199,22 @@ class proyecto(models.Model):
         if ( count == 0 ):
             return "no hay accion"
         return av/count
+    def semaforo(self):
+        from django.db import connection
+        cursor = connection.cursor()
+        cursor.execute("""
+            SELECT id 
+            FROM captura_accion
+            WHERE %s IN ( padre_id )
+            """, [self.id])
+        for hija in cursor.fetchall():
+            for hij in hija:
+                for hi in accion.objects.filter(id__contains=hij):
+                    if ( hi.semaforo == "alto" ):
+                        return "alto"
+                    if ( hi.semaforo == "amarillo" ):
+                        return "amarillo"
+        return "siga"
     def __unicode__(self):
         return self.nombre
 
@@ -211,6 +229,12 @@ class accion(models.Model):
     necesario = models.ManyToManyField("self",blank=True,verbose_name='Es necesrio para')
     avance = models.IntegerField(verbose_name='Porcentaje de avance',default='0')
     activo = models.BooleanField(default=True)
+    def semaforo(self):
+        if self.avance < 50 and (today-self.inicio)/(self.fecha-self.inicio) < 0.8:
+            return "rojo"
+        if self.avance/100 < (today-self.inicio)/(self.fecha-self.inicio):
+            return "amarillo"
+        return "verde"
     def __unicode__(self):
         return self.nombre
 

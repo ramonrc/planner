@@ -33,7 +33,7 @@ el nombre.</p>
 					<tr>
 						<td class="auto-style16" style="width: 818px">Meta {{ ob.0.id }}.{{ m.id }}.- {{ m.nombre }}</td>
 						<td class="auto-style16" style="width: 42px">
-						<img alt="" height="40" src="/static/admin/grm/siga.png" width="120" /></td>
+						<img alt="" height="40" src="/static/admin/grm/{{ m.semaforo }}.png" width="120" /></td>
 					</tr>
 					<tr>
 						<td colspan="2">
@@ -43,7 +43,7 @@ el nombre.</p>
 								<td class="auto-style16" style="width: 832px">
 								Estrategia {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</td>
 								<td class="auto-style16">
-								<img alt="" class="auto-style8" height="35" src="/static/admin/grm/amarillo.png" width="105" /></td>
+								<img alt="" class="auto-style8" height="35" src="/static/admin/grm/{{ e.semaforo }}.png" width="105" /></td>
 							</tr>
 							<tr>
 								<td colspan="2" class="auto-style18">
@@ -53,7 +53,7 @@ el nombre.</p>
 										<td class="auto-style16" style="width: 862px">
 										Proyecto {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</td>
 										<td class="auto-style16">
-										<img alt="" height="30" src="/static/admin/grm/amarillo.png" width="90" /></td>
+										<img alt="" height="30" src="/static/admin/grm/{{ p.semaforo }}.png" width="90" /></td>
 									</tr>
 {% endfor %}
 								</table>
@@ -69,7 +69,7 @@ el nombre.</p>
 {% endfor %}
 		</table>
 {% endif %}		
-		<a href="/goremo/admin/captura/objetivo/{{ ob.0.id }}/delete/"><img id="img3" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a>
+		<a href="/goremo/objetivo/rm/{{ ob.0.id }}/"><img id="img3" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a>
 </body>
 </html>
 {% endblock %}

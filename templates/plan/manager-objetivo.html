@@ -21,27 +21,27 @@ podrá añadir, modificar o borrar metas, estrategias y proyectos.</p>
 				<table style="width: 94%" align="right">
 					<tr>
 						<td class="auto-style16" style="width: 818px">
-						<a href="modificacion-meta.html">{{ ob.0.id }}.{{ m.id }}.- {{ m.nombre }}</a></td>
+						<a href="/goremo/meta/edit/{{ m.id }}/">Meta {{ ob.0.id }}.{{ m.id }}.- {{ m.nombre }}</a></td>
 						<td class="auto-style16" style="width: 42px">
-						<img alt="" height="40" src="/static/admin/grm/alto.png" width="120" /></td>
+						<img alt="" height="40" src="/static/admin/grm/{{ m.semaforo }}.png" width="120" /></td>
 					</tr>
 					<tr>
 						<td colspan="2">
 						<table style="width: 93%" align="right">
 {% for e in m.hijas %}
 							<tr><td class="auto-style16" style="width: 832px">
-								<a href="modificacion-estrategia.html">{{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</a></td>
+								<a href="modificacion-estrategia.html">Estrategia {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</a></td>
 								<td class="auto-style16">
-								<img alt="" class="auto-style8" height="35" src="/static/admin/grm/amarillo.png" width="105" /></td>
+								<img alt="" class="auto-style8" height="35" src="/static/admin/grm/{{ e.semaforo }}.png" width="105" /></td>
 							</tr>
 							<tr><td colspan="2" class="auto-style18">
 								<table style="width: 96%" align="right">
 {% for p in e.hijas %}
 									<tr><td class="auto-style16" style="width: 862px">
 										<a href="modificacion-proyecto.html">
-										  {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</a></td>
+										  Proyecto {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</a></td>
 										<td class="auto-style16">
-										<img alt="" height="30" src="/static/admin/grm/amarillo.png" width="90" /></td>
+										<img alt="" height="30" src="/static/admin/grm/{{ p.semaforo }}.png" width="90" /></td>
 									</tr>
 {% endfor %}
 								</table>

@@ -26,7 +26,7 @@ class Est(admin.ModelAdmin):
 class Obj(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['nombre','descripcion']}),
-        ('Avanzado', {'fields': ['peer'], 'classes': ['collapse']})]
+        ('Avanzado', {'fields': ['peer','activo','autor'], 'classes': ['collapse']})]
     def save_model(self, request, obj, form, change): 
 	if not change:
 	    obj.autor = request.user
@@ -41,11 +41,12 @@ class Obj(admin.ModelAdmin):
         if custgroup in request.user.groups.all():
             return objetivo.objects.all()
         return objetivo.objects.filter(autor=request.user)
-    list_display = ('nombre', 'autor', 'descripcion', 'hijas')
+    list_display = ('nombre', 'autor', 'activo', 'hijas')
 
 class Met(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ['nombre','descripcion','padre','fecha',('cuantificador','unidad')]})]
+        (None, {'fields': ['nombre','descripcion','padre','fecha',('cuantificador','unidad')]}),
+        ('Avanzado', {'fields': ['activo','autor'], 'classes': ['collapse']})]
     def save_model(self, request, obj, form, change): 
 	if not change:
 	    obj.autor = request.user
@@ -60,7 +61,7 @@ class Met(admin.ModelAdmin):
         if custgroup in request.user.groups.all():
             return meta.objects.all()
         return meta.objects.filter(autor=request.user)
-    list_display = ('nombre', 'avance', 'fecha', 'hijas')
+    list_display = ('nombre', 'avance', 'fecha', 'activo', 'hijas')
 
 class Pro(admin.ModelAdmin):
     fieldsets = [
