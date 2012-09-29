@@ -1,11 +1,7 @@
 ﻿{% extends "plan/base.html" %}
 {% block content %}
-
 <span class="auto-style1">detalle de objetivo <em>{{ ob.0.id }}</em></span>
-
-<p class="auto-style12" style="width: 879px">en esta pantalla el manager (<em>{{ user }}</em>) podrá 
-revisar los detalles de progreso de uno de sus objetivos en específico. También 
-podrá añadir, modificar o borrar metas, estrategias y proyectos.</p>
+<p class="auto-style12" style="width: 879px">en esta pantalla el manager (<em>{{ user }}</em>) podr&aacute; revisar los detalles de progreso de uno de sus objetivos en espec&iacute;fico. Tambi&eacute;n podr&aacute; a&ntilde;adir, modificar o borrar metas, estrategias y proyectos.</p>
 {% if ob %}
 		<table class="auto-style15" style="width: 83%">
 			<tr>
@@ -30,7 +26,7 @@ podrá añadir, modificar o borrar metas, estrategias y proyectos.</p>
 						<table style="width: 93%" align="right">
 {% for e in m.hijas %}
 							<tr><td class="auto-style16" style="width: 832px">
-								<a href="modificacion-estrategia.html">Estrategia {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</a></td>
+							<a href="/goremo/estrategia/edit/{{e.id}}/">Estrategia {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.- {{ e.nombre }}</a></td>
 								<td class="auto-style16">
 								<img alt="" class="auto-style8" height="35" src="/static/admin/grm/{{ e.semaforo }}.png" width="105" /></td>
 							</tr>
@@ -58,6 +54,5 @@ podrá añadir, modificar o borrar metas, estrategias y proyectos.</p>
 		</table>
 {% endif %}		
 </body>
-
 </html>
 {% endblock %}

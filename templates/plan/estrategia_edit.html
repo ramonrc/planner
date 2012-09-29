@@ -1,4 +1,4 @@
-{% extends "plan/index.html" %}
+{% extends "plan/base.html" %}
 {% load i18n %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
@@ -10,17 +10,70 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-<div id="content-main">
-<h1>Seguimiento de Estrategia</h1>
+{% if ef %}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
-<form action="/goremo/captura/estrategia_edit/{{ estrategia_id }}/" method="post">
+<form action="" method="post">
 {% csrf_token %}
+    {{ ef.management_form }}
+<div id="content-main">
+<h1  class="auto-style1">Estrategia {{ ef.0.id }}</h1>
 <table>
-{{ estrategia_form.as_table }}
-{{ estrategia_pro.as_table }}
+<p class="auto-style8" style="width: 1020px"><br />
+<br />
+En &eacute;sta p&aacute;gina el manager podr&aacute; modificar una meta existente o crear una nueva estrategia para una meta ya definida. <br />
+Tambi&eacute;n podr&aacute; a&ntilde;adir, modificar o remover proyectos ligados a esta estrategia.<br /> 
+Los campos marcados con asterisco (*) son obligatorios </p> 
+<table style="width: 99%; height: 253px" class="auto-style9">
+        <!-- tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Objetivo 
+                padre</td>
+                <td class="auto-style16" style="height: 26px" colspan="3">
+                {{ ef.0.padre }}</td>
+        </tr -->
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Meta&nbsp;padre</td>
+                <td class="auto-style16" style="height: 26px" colspan="3">
+                {{ ef.0.padre }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Nombre de la estrategia *</td>
+                <td class="auto-style16" style="height: 26px" colspan="3">
+                {{ ef.0.nombre }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 72px; width: 357px">Descripci&oacute;n de la estrategia</td>
+                <td class="auto-style16" style="height: 72px" colspan="3">
+                {{ ef.0.descripcion }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 35px; " rowspan="3">Proyectos relacionados *</td> 
+                {% for proj in eh %}
+                <td class="auto-style10" style="height: 35px; width: 582px">
+                <a href="/goremo/proyecto/edit/{{proj.id}}">{{ proj.nombre }}</a></td>
+                <td class="auto-style10" style="height: 35px; width: 582px">
+                <a href="mailto:{{ proj.responsable.email }}">{{ proj.responsable.get_full_name }}</a></td>
+                <td class="auto-style10" style="height: 35px; ">
+                <a href="/goremo/proyecto/rm/{{proj.id}}/"><img id="imag{{ eh.id }}" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'imag{{ eh.id }}',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag{{ eh.id }}',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag{{ eh.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag{{ eh.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
+               {% endfor %}
+        </tr>
+        <tr>
+                <td class="auto-style17" style="height: 35px; " colspan="3">
+                <a href="/goremo/proyecto/add/">
+                <img id="img13" alt="a&ntilde;adir proyecto" height="22" onmousedown="FP_swapImg(1,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevoProyectoPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevoProyecto.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevoProyectoFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevoProyecto.jpg')" src="button70.jpg" style="border: 0" width="112" class="auto-style1" />
+        </tr>
+        <!-- tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Comentarios</td>
+                <td class="auto-style16" style="height: 26px" colspan="3">
+                log de comentarios donde se van acumulando las entradas del manager<br />
+                <br />
+                <textarea name="TextArea1" rows="2" style="width: 732px">nuevo comentario</textarea></td>
+        </tr -->
+        <tr>
+                <td class="auto-style13" colspan="3">
+                <input type="submit" value="Guardar Cambios" />
+        </tr>
 </table>
-<input type="submit" value="Save" />
 </form>
 </div>
+{% endif %}
 {% endblock %}

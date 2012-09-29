@@ -24,11 +24,11 @@ def inicio(request):
         return render_to_response('plan/manager.html', {'ol' : ps}, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="lider") 
     if custgroup in request.user.groups.all():
-        ps = proyecto.objects.filter(autor=request.user).filter(activo=True).order_by("id")
+        ps = proyecto.objects.filter(responsable=request.user).filter(activo=True).order_by("id")
         return render_to_response('propuesta/seguimiento-proyecto.html', {'ol' : ps}, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="responsable") 
     if custgroup in request.user.groups.all():
-        ps = accion.objects.filter(autor=request.user).filter(activo=True).order_by("id")]
+        ps = accion.objects.filter(responsable=request.user).filter(activo=True).order_by("id")
         return render_to_response('propuesta/seguimiento-accion.html', {'ol' : ps}, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="administrador") 
     if custgroup in request.user.groups.all():
@@ -82,8 +82,23 @@ def edito(request, ob_id):
          return render_to_response('plan/objetivo_edit.html', {'of' : od}, context_instance=RequestContext(request))
    return HttpResponse(ob_id)
 
+def adde(request):
+   EstrategiaForm = modelformset_factory(estrategia, fields=('nombre', 'padre', 'descripcion')) 
+   if request.method == 'POST':
+      ed = EstrategiaForm(request.POST, request.FILES)
+      if ed.is_valid():
+         ed.save()
+            # do something.
+         return HttpResponseRedirect('../../')
+      else:
+         msg = "Se produjo un error al capturar los datos"
+         return render_to_response('plan/msg.html', {'ms' : msg}, context_instance=RequestContext(request))
+   else:
+      ed = EstrategiaForm(queryset=estrategia.objects.none())
+   return render_to_response('plan/estrategia_edit.html', {'ef': ed}, context_instance=RequestContext(request) )   
+
 def editm(request, me_id):
-   MetaForm = modelformset_factory(meta, fields=('nombre', 'autor', 'fecha', 'cuantificador', 'descripcion'))
+   MetaForm = modelformset_factory(meta, fields=('nombre', 'fecha', 'cuantificador', 'unidad', 'descripcion', 'padre'))#, widgets = {'nombre': Textarea(attrs={'cols': 100, 'rows': 1}), })
    if request.method == 'POST':
       md = MetaForm(request.POST, request.FILES)
       if md.is_valid():
@@ -97,9 +112,10 @@ def editm(request, me_id):
       custgroup = Group.objects.get(name="manager")
       if custgroup in request.user.groups.all():
          me = meta.objects.filter(pk=me_id)
-#         me = get_object_or_404(meta, pk=me_id)
+         met = meta.objects.get(pk=me_id)
          md = MetaForm(queryset=me)
-         return render_to_response('plan/meta_edit.html', {'mf' : md}, context_instance=RequestContext(request))
+         hi = met.hijas()
+         return render_to_response('plan/meta_edit.html', {'mf' : md, 'mh' : hi}, context_instance=RequestContext(request))
    return HttpResponse(me_id)
 
 def delo(request, ob_id):
@@ -107,6 +123,33 @@ def delo(request, ob_id):
     ob.activo = False
     ob.save()
     return HttpResponseRedirect('../../../')
+
+def dele(request, ob_id):
+    ob = estrategia.objects.get(pk=ob_id)
+    ob.padre = 0
+    ob.save()
+    return HttpResponseRedirect('../../../')
+
+def edite(request, es_id):
+   EstrategiaForm = modelformset_factory(estrategia, fields=('nombre', 'padre', 'descripcion'))#, widgets = {'nombre': Textarea(attrs={'cols': 100, 'rows': 1}), })
+   if request.method == 'POST':
+      ed = EstrategiaForm(request.POST, request.FILES)
+      if ed.is_valid():
+         ed.save()
+            # do something.
+         return HttpResponseRedirect("../../..")
+      else:
+         msg = "Se produjo un error al capturar los datos"
+         return render_to_response('plan/msg.html', {'ms' : msg}, context_instance=RequestContext(request))
+   else:
+      custgroup = Group.objects.get(name="manager")
+      if custgroup in request.user.groups.all():
+         es = estrategia.objects.filter(pk=es_id)
+         est = estrategia.objects.get(pk=es_id)
+         ed = EstrategiaForm(queryset=es)
+         hi = est.hijas()
+         return render_to_response('plan/estrategia_edit.html', {'ef' : ed, 'eh' : hi}, context_instance=RequestContext(request))
+   return HttpResponse(es_id)
 
 def opt(request):
     custgroup = Group.objects.get(name="manager") 

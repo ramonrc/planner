@@ -11,21 +11,70 @@
 
 {% block content %}
 {% if mf %}
-<div id="content-main">
-<h1>Meta</h1>{{ mf.nombre }}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 <form action="" method="post">
 {% csrf_token %}
     {{ mf.management_form }}
-<p>        {% for field in mf.0 %}
-            {{ field.label_tag }}: {{ field }}<br>
-        {% endfor %}
-  {% for hi in mf.0.hijas %}
-  {{ hi.management_form }}
-  {{ hi }}<br>
-  {% endfor %}
-</p>  
-<input type="submit" value="Save" />
+<div id="content-main">
+<h1 class="auto-style1">Meta {{ mf.0.id }}</h1>
+<p class="auto-style8" style="width: 1020px"><br />
+En esta p&aacute;gina el manager podr&aacute; modificar una meta existente o crear una nueva meta para un objetivo espec&iacute;fico. <br />
+Tambi&eacute;n podr&aacute; a&ntilde;adir, modificar o remover estrategias ligadas a esta meta.<br />
+<br />
+Los campos marcados con asterisco (*) son obligatorios </p>
+<table style="width: 99%; height: 253px" class="auto-style9">
+	<tr> 
+		<td class="auto-style10" style="height: 26px; width: 357px">Objetivo padre</td>
+		<td class="auto-style16" style="height: 26px" colspan="2">
+		{{ mf.0.padre }}</td>
+	</tr>
+	<tr>
+		<td class="auto-style10" style="height: 26px; width: 357px">Nombre de la meta*</td>
+		<td class="auto-style16" style="height: 26px" colspan="2">
+		{{ mf.0.nombre }} </td>
+	</tr>
+	<tr>
+		<td class="auto-style10" style="height: 72px; width: 357px">Descripci&oacute;n de la meta</td>
+		<td class="auto-style16" style="height: 72px" colspan="2">
+                {{ mf.0.descripcion }} </td>
+	</tr>
+	<tr>
+		<td class="auto-style10" style="height: 72px; width: 357px">Fecha de cumplimiento *</td>
+		<td class="auto-style16" style="height: 72px" colspan="2">
+		{{ mf.0.fecha }} </td>
+	</tr>
+	<tr>
+		<td class="auto-style10" style="height: 35px; " colspan="3">Cuantificador*&nbsp;
+		{{ mf.0.cuantificador }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+		Tipo de medici&oacuten*&nbsp;&nbsp;
+		{{ mf.0.unidad }}</td>
+	</tr> 
+	<tr>
+		<td class="auto-style10" style="height: 35px; " rowspan="3">Estrategias relacionadas *</td>
+		{% for estr in mh %}
+		<td class="auto-style16" style="height: 35px; width: 582px">
+		<a href="/goremo/estrategia/edit/{{estr.id}}/">{{ estr.nombre }}</a></td>
+		<td class="auto-style16" style="height: 35px; ">
+                <a href="/goremo/estrategia/rm/{{estr.id}}/"><img id="imag{{ ob.id }}" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
+		{% endfor %}
+	</tr>
+	<tr>
+		<td class="auto-style17" style="height: 35px; " colspan="2">
+		<a href="/goremo/estrategia/add/">
+		<img id="img13" alt="añadir estrategia" height="24" onmousedown="FP_swapImg(1,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevaMetaPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevaMeta.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevaMetaFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevaMetaFocus.jpg')" src="/static/admin/grm/nuevaMeta.jpg" style="border: 0" width="120" class="auto-style1" />
+	</tr>
+	<!-- tr>
+		<td class="auto-style10" style="height: 26px; width: 357px">Comentarios</td>
+		<td class="auto-style16" style="height: 26px" colspan="2">
+		log de comentarios donde se van acumulando las entradas del manager<br />
+		<br />
+		<textarea name="TextArea1" rows="2" style="width: 732px">nuevo comentario</textarea></td>
+	</tr -->
+	<tr>
+		<td class="auto-style13" colspan="3">
+		<input type="submit" value="Guardar Cambios" />
+	</tr>
+</table>
 </form>
 </div>
 {% endif %}
