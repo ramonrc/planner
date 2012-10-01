@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User #AbstractUser
 from django.forms import ModelForm
 from django.forms.models import inlineformset_factory,modelformset_factory
 import datetime
@@ -13,6 +13,9 @@ class telefonos_persona(models.Model):
     persona = models.ForeignKey(User,unique=True)
     numero = models.BigIntegerField(unique=True,verbose_name='Numero telefonico')
     tipo = models.CharField(max_length=1, choices=tipo)
+
+class persona(User):
+    telefono = models.ForeignKey(telefonos_persona,related_name='persona_telefono')
 
 class objetivo(models.Model):
     nombre = models.CharField(max_length=255,unique=True,verbose_name='Definicion')
@@ -122,10 +125,25 @@ class meta(models.Model):
     def __unicode__(self):
         return self.nombre
 
+class problema(models.Model):
+	severidad = ( 
+		('A', 'Alta'),
+		('B', 'Baja'),
+        )
+	autor = models.ForeignKey(User,blank=True,null=True,editable=False)
+	fecha = models.DateField('fecha',default=datetime.date.today(),editable=False)
+	severidad = models.CharField(max_length=1, choices=severidad)
+	descripcion = models.CharField(max_length=2000,verbose_name='Descripcion del problema')
+	resuelto = models.BooleanField(default=False)
+	def __unicode__(self):
+             return self.descripcion
+
 class estrategia(models.Model):
     nombre = models.CharField(max_length=255,unique=True,verbose_name='Definicion')
     padre = models.ForeignKey(meta,verbose_name='Meta padre')
     descripcion = models.CharField(max_length=2000,blank=True,verbose_name='Descripcion')
+#    prob = models.ForeignKey(problema,verbose_name='Problema')
+#    activo = models.BooleanField(default=True)
     def hijas(self):
         from django.db import connection
         cursor = connection.cursor()
@@ -167,6 +185,7 @@ class proyecto(models.Model):
     necesita = models.ManyToManyField("self",blank=True,verbose_name='Necesita de')
     necesario = models.ManyToManyField("self",blank=True,verbose_name='Es necesrio para')
     activo = models.BooleanField(default=True)
+#    prob = models.ForeignKey(problema,verbose_name='Problema')
     def hijas(self):
         from django.db import connection
         cursor = connection.cursor()
@@ -229,6 +248,7 @@ class accion(models.Model):
     necesario = models.ManyToManyField("self",blank=True,verbose_name='Es necesrio para')
     avance = models.IntegerField(verbose_name='Porcentaje de avance',default='0')
     activo = models.BooleanField(default=True)
+#    prob = models.ForeignKey(problema,verbose_name='Problema')
     def semaforo(self):
         if self.avance < 50 and (today-self.inicio)/(self.fecha-self.inicio) < 0.8:
             return "rojo"
@@ -237,19 +257,6 @@ class accion(models.Model):
         return "verde"
     def __unicode__(self):
         return self.nombre
-
-class problema(models.Model):
-	severidad = ( 
-		('A', 'Alta'),
-		('B', 'Baja'),
-        )
-	autor = models.ForeignKey(User,blank=True,null=True,editable=False)
-	fecha = models.DateField('fecha',default=datetime.date.today(),editable=False)
-	severidad = models.CharField(max_length=1, choices=severidad)
-	descripcion = models.CharField(max_length=2000,verbose_name='Descripcion del problema')
-	resuelto = models.BooleanField(default=False)
-	def __unicode__(self):
-             return self.descripcion
 
 class pro_est(models.Model):
 	sobre = models.ForeignKey(estrategia)
@@ -268,38 +275,3 @@ class pro_acc(models.Model):
 	problema = models.ForeignKey(problema,verbose_name='Problemas')
 	def __unicode__(self):
              return self.problema.descripcion
-
-
-Accioninline = inlineformset_factory(accion, pro_acc, can_delete=False, extra=1)
-
-Proyectoinline = inlineformset_factory(proyecto, pro_pro, can_delete=False, extra=1)
-
-Estrategiainline = inlineformset_factory(estrategia, pro_est, can_delete=False, extra=1)
-
-accionFormSet = modelformset_factory(accion)
-
-class accionForm(ModelForm):
-    class Meta:
-        model = accion
-#        fields = ('avance','fecha','responsable','activo')
-
-class proyectoForm(ModelForm):
-    class Meta:
-        model = proyecto
-#        fields = ('responsable','activo')
-
-class estrategiaForm(ModelForm):
-    class Meta:
-        model = estrategia
-#        fields = ('nombre', 'descripcion')
-
-class metaForm(ModelForm):
-    class Meta:
-        model = meta
-#        fields = ('fecha','cuantificador','activo')
-
-class objetivoFrom(ModelForm):
-    class Meta:
-        model = objetivo
-#        fields = ('descripcion','peer','activo')
-

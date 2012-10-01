@@ -1,4 +1,4 @@
-from captura.models import telefonos_persona,objetivo,meta,estrategia,proyecto,accion,unidad_meta
+from captura.models import telefonos_persona,persona,objetivo,meta,estrategia,proyecto,accion,unidad_meta
 from django.contrib.auth.models import User,Group
 from django.contrib import admin
 from seguimiento.models import com_est,com_pro,com_acc
@@ -16,8 +16,7 @@ class AcciChoice(admin.TabularInline):
     extra = 0
 
 class Telefono(admin.ModelAdmin):
-    list_display = ('persona', 'numero', 'tipo')
-    list_filter = ['persona', 'tipo']
+    list_display = ('persona', 'telefono')
 
 class Est(admin.ModelAdmin):
     inlines = [EstrChoice]
@@ -94,4 +93,5 @@ admin.site.register(proyecto, Pro)
 #admin.site.register(accion)
 admin.site.register(accion, Act)
 #admin.site.register(unidad_meta)
-admin.site.register(telefonos_persona, Telefono)
+admin.site.register(persona, Telefono)
+admin.site.register(telefonos_persona)

@@ -6,99 +6,172 @@ from django.contrib.auth.models import Group
 from django.contrib.auth import logout
 from django.template import RequestContext
 from models import *
+from forms import *
+
+burl = "/goremo/"
 
 def logout_page(request):
    logout(request)
-   return HttpResponseRedirect('/goremo/')
+   return HttpResponseRedirect(burl)
 
-@login_required(login_url='/goremo/accounts/login/')
+@login_required(login_url = burl + "accounts/login/")
 #@login_required()
-def inicio(request):
+def inicio(request): # dependiendo del grupo aque esta asignado el usuario
     custgroup = Group.objects.get(name="ejecutivo") 
     if custgroup in request.user.groups.all():
+        custgroup2 = Group.objects.get(name="manager") 
         ps = objetivo.objects.filter(activo=True).order_by("id")
-        return render_to_response('plan/ejecutivo.html', {'ol' : ps}, context_instance=RequestContext(request))
+        if custgroup2 in request.user.groups.all(): # si es manageer y ejecutivo entra como manager
+           return render_to_response('plan/manager.html', {'ol' : ps, 'bu' : burl }, context_instance=RequestContext(request))
+        return render_to_response('plan/ejecutivo.html', {'ol' : ps, 'bu' : burl }, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="manager") 
     if custgroup in request.user.groups.all():
         ps = objetivo.objects.filter(autor=request.user).filter(activo=True).order_by("id")
-        return render_to_response('plan/manager.html', {'ol' : ps}, context_instance=RequestContext(request))
+        return render_to_response('plan/manager.html', {'ol' : ps, 'bu' : burl }, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="lider") 
     if custgroup in request.user.groups.all():
+        custgroup2 = Group.objects.get(name="responsable")
+        if custgroup2 in request.user.groups.all():
+           return render_to_response('plan/lider.html')
         ps = proyecto.objects.filter(responsable=request.user).filter(activo=True).order_by("id")
-        return render_to_response('propuesta/seguimiento-proyecto.html', {'ol' : ps}, context_instance=RequestContext(request))
+        return render_to_response('propuesta/seguimiento-proyecto.html', {'ol' : ps, 'bu' : burl }, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="responsable") 
     if custgroup in request.user.groups.all():
         ps = accion.objects.filter(responsable=request.user).filter(activo=True).order_by("id")
-        return render_to_response('propuesta/seguimiento-accion.html', {'ol' : ps}, context_instance=RequestContext(request))
+        return render_to_response('propuesta/seguimiento-accion.html', {'ol' : ps, 'bu' : burl }, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="administrador") 
     if custgroup in request.user.groups.all():
         ps = [objetivo.objects.order_by("id"), meta.objects.order_by("id"), estrategia.objects.order_by("id"), proyecto.objects.order_by("id"), accion.objects.order_by("id")]
-        return render_to_response('propuesta/admin.html', {'ol' : ps}, context_instance=RequestContext(request))
+        return render_to_response('propuesta/admin.html', {'ol' : ps, 'bu' : burl }, context_instance=RequestContext(request))
     ps = "Su usuario no esta asignado a rol alguno, contactar al administrador"
-    return render_to_response('plan/msg.html', {'ms' : ps})
+    return render_to_response('plan/msg.html', {'ms' : ps, 'bu' : burl })
 
 def objet(request, ob_id):
+    ps = objetivo.objects.filter(pk=ob_id)
     custgroup = Group.objects.get(name="ejecutivo")
     if custgroup in request.user.groups.all():
-        ps = objetivo.objects.filter(pk=ob_id)
-        return render_to_response('plan/ejecutivo-objetivo.html', {'ob' : ps}, context_instance=RequestContext(request))
+        custgroup2 = Group.objects.get(name="manager") 
+        if custgroup2 in request.user.groups.all():
+           return render_to_response('plan/manager-objetivo.html', {'ob' : ps, 'bu' : burl }, context_instance=RequestContext(request))
+        return render_to_response('plan/ejecutivo-objetivo.html', {'ob' : ps, 'bu' : burl }, context_instance=RequestContext(request))
     custgroup = Group.objects.get(name="manager")
     if custgroup in request.user.groups.all():
-        ps = objetivo.objects.filter(pk=ob_id)
-        return render_to_response('plan/manager-objetivo.html', {'ob' : ps}, context_instance=RequestContext(request))
+        return render_to_response('plan/manager-objetivo.html', {'ob' : ps, 'bu' : burl }, context_instance=RequestContext(request))
     return HttpResponse("ob_id")
 
-def addo(request):
-   ObjetivoForm = modelformset_factory(objetivo, fields=('nombre', 'autor', 'descripcion')) # falta peer
+def addo(request): # agrega un objetivo
    if request.method == 'POST':
       od = ObjetivoForm(request.POST, request.FILES)
       if od.is_valid():
+            # envio de correo a el manager responsabla
          od.save()
-            # do something.
          return HttpResponseRedirect('../../')
       else:
          msg = "Se produjo un error al capturar los datos"
-         return render_to_response('plan/msg.html', {'ms' : msg}, context_instance=RequestContext(request))
+         return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
    else:
       od = ObjetivoForm(queryset=objetivo.objects.none())
-   return render_to_response('plan/objetivo_edit.html', {'of': od}, context_instance=RequestContext(request) )   
+   return render_to_response('plan/objetivo_edit.html', {'of': od, 'bu' : burl }, context_instance=RequestContext(request) )   
 
+@login_required(login_url = burl + "accounts/login/")
 def edito(request, ob_id):
-   ObjetivoForm = modelformset_factory(objetivo, fields=('nombre', 'autor', 'descripcion'))
    if request.method == 'POST':
       od = ObjetivoForm(request.POST, request.FILES)
       if od.is_valid():
+            # envio de correo en caso de problema
          od.save()
-            # do something.
          return HttpResponseRedirect('../../../')
       else:
          msg = "Se produjo un error al capturar los datos"
-         return render_to_response('plan/msg.html', {'ms' : msg}, context_instance=RequestContext(request))
+         return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
    else: 
       custgroup = Group.objects.get(name="ejecutivo")
       if custgroup in request.user.groups.all():
          ob = objetivo.objects.filter(pk=ob_id)
          od = ObjetivoForm(queryset=ob)
-         return render_to_response('plan/objetivo_edit.html', {'of' : od}, context_instance=RequestContext(request))
+         return render_to_response('plan/objetivo_edit.html', {'of' : od, 'bu' : burl }, context_instance=RequestContext(request))
    return HttpResponse(ob_id)
 
+def delo(request, ob_id):
+    mensaje = "Se esta procediendo a borrar el objetivo: "
+    mensaje += ob_id
+    anterior = "../../../"
+    borrado = burl+'objetivo/rmv/'
+    borrado += ob_id
+    borrado += '/'
+    return render_to_response('plan/confirm.html', {'message' : mensaje, 'prev_link' : anterior, 'action_link' : borrado, 'bu' : burl }, context_instance=RequestContext(request))
+
+@login_required(login_url = burl + "accounts/login/")
+def delO(request, ob_id): # deshabilita
+    ob = objetivo.objects.get(pk=ob_id)
+    ob.activo = False
+    ob.save()
+    return HttpResponseRedirect('../../../')
+
 def adde(request):
-   EstrategiaForm = modelformset_factory(estrategia, fields=('nombre', 'padre', 'descripcion')) 
+   if request.method == 'POST':
+      ed = EstrategiaForm(request.POST, request.FILES)
+      if ed.is_valid():
+         ed.save()
+         return HttpResponseRedirect('../../')
+      else:
+         msg = "Se produjo un error al capturar los datos"
+         return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
+   else:
+      ed = EstrategiaForm(queryset=estrategia.objects.none())
+   return render_to_response('plan/estrategia_edit.html', {'ef': ed, 'bu' : burl }, context_instance=RequestContext(request) )   
+
+@login_required(login_url = burl + "accounts/login/")
+def edite(request, es_id):
    if request.method == 'POST':
       ed = EstrategiaForm(request.POST, request.FILES)
       if ed.is_valid():
          ed.save()
             # do something.
+         return HttpResponseRedirect("../../..")
+      else:
+         msg = "Se produjo un error al capturar los datos"
+         return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
+   else:
+      custgroup = Group.objects.get(name="manager")
+      if custgroup in request.user.groups.all():
+         est = estrategia.objects.get(pk=es_id)
+         ed = [ estrategiaForm(instance=est) ]
+         hi = est.hijas()
+         return render_to_response('plan/estrategia_edit.html', {'ei' : est, 'ef' : ed, 'eh' : hi, 'bu' : burl }, context_instance=RequestContext(request))
+   return HttpResponse(es_id)
+
+def dele(request, es_id):
+    mensaje = "Se esta procediendo a borrar la estrategia: "
+    mensaje =+ es_id
+    anterior = "../../../"
+    borrado = burl+"estrategia/rmv/"
+    borrado += es_id
+    borrado += "/"
+    return render_to_response('plan/confirm.html', {'message' : mensaje, 'prev_link' : anterior, 'action_link' : borrado, 'bu' : burl }, context_instance=RequestContext(request))
+
+@login_required(login_url = burl + "accounts/login/")
+def delE(request, es_id):
+    es = estrategia.objects.get(pk=es_id)
+#    es.activo = False
+    es.save()
+    return HttpResponseRedirect('../../../')
+
+def addm(request):
+   if request.method == 'POST':
+      md = MetaForm(request.POST, request.FILES)
+      if md.is_valid():
+         md.save()
          return HttpResponseRedirect('../../')
       else:
          msg = "Se produjo un error al capturar los datos"
-         return render_to_response('plan/msg.html', {'ms' : msg}, context_instance=RequestContext(request))
+         return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
    else:
-      ed = EstrategiaForm(queryset=estrategia.objects.none())
-   return render_to_response('plan/estrategia_edit.html', {'ef': ed}, context_instance=RequestContext(request) )   
+      md = MetaForm(queryset=meta.objects.none())
+   return render_to_response('plan/meta_edit.html', {'mf': md, 'bu' : burl }, context_instance=RequestContext(request) )   
 
+@login_required(login_url = burl + "accounts/login/")
 def editm(request, me_id):
-   MetaForm = modelformset_factory(meta, fields=('nombre', 'fecha', 'cuantificador', 'unidad', 'descripcion', 'padre'))#, widgets = {'nombre': Textarea(attrs={'cols': 100, 'rows': 1}), })
    if request.method == 'POST':
       md = MetaForm(request.POST, request.FILES)
       if md.is_valid():
@@ -107,7 +180,7 @@ def editm(request, me_id):
          return HttpResponseRedirect("../../..")
       else:
          msg = "Se produjo un error al capturar los datos"
-         return render_to_response('plan/msg.html', {'ms' : msg}, context_instance=RequestContext(request))
+         return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
    else:
       custgroup = Group.objects.get(name="manager")
       if custgroup in request.user.groups.all():
@@ -115,41 +188,82 @@ def editm(request, me_id):
          met = meta.objects.get(pk=me_id)
          md = MetaForm(queryset=me)
          hi = met.hijas()
-         return render_to_response('plan/meta_edit.html', {'mf' : md, 'mh' : hi}, context_instance=RequestContext(request))
+         return render_to_response('plan/meta_edit.html', {'mf' : md, 'mh' : hi, 'bu' : burl }, context_instance=RequestContext(request))
    return HttpResponse(me_id)
 
-def delo(request, ob_id):
-    ob = objetivo.objects.get(pk=ob_id)
-    ob.activo = False
-    ob.save()
+def delm(request, me_id):
+    mensaje = "Se esta procediendo a borrar la meta: "
+    mensaje =+ me_id
+    anterior = "../../../"
+    borrado = burl+"estrategia/rmv/"
+    borrado += me_id
+    borrado += "/"
+    return render_to_response('plan/confirm.html', {'message' : mensaje, 'prev_link' : anterior, 'action_link' : borrado, 'bu' : burl }, context_instance=RequestContext(request))
+
+@login_required(login_url = burl + "accounts/login/")
+def delM(request, me_id):
+    me = estrategia.objects.get(pk=me_id)
+#    me.activo = False
+    me.save()
     return HttpResponseRedirect('../../../')
 
-def dele(request, ob_id):
-    ob = estrategia.objects.get(pk=ob_id)
-    ob.padre = 0
-    ob.save()
-    return HttpResponseRedirect('../../../')
-
-def edite(request, es_id):
-   EstrategiaForm = modelformset_factory(estrategia, fields=('nombre', 'padre', 'descripcion'))#, widgets = {'nombre': Textarea(attrs={'cols': 100, 'rows': 1}), })
+def addp(request):
    if request.method == 'POST':
-      ed = EstrategiaForm(request.POST, request.FILES)
-      if ed.is_valid():
-         ed.save()
-            # do something.
-         return HttpResponseRedirect("../../..")
+      pd = ProyectoForm(request.POST, request.FILES)
+      if pd.is_valid():
+         pd.save()
+         return HttpResponseRedirect('../../')
       else:
          msg = "Se produjo un error al capturar los datos"
-         return render_to_response('plan/msg.html', {'ms' : msg}, context_instance=RequestContext(request))
+         return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
    else:
-      custgroup = Group.objects.get(name="manager")
-      if custgroup in request.user.groups.all():
-         es = estrategia.objects.filter(pk=es_id)
-         est = estrategia.objects.get(pk=es_id)
-         ed = EstrategiaForm(queryset=es)
-         hi = est.hijas()
-         return render_to_response('plan/estrategia_edit.html', {'ef' : ed, 'eh' : hi}, context_instance=RequestContext(request))
-   return HttpResponse(es_id)
+      pd = ProyectoForm(queryset=proyecto.objects.none())
+   return render_to_response('plan/proyecto_edit.html', {'pf': pd, 'bu' : burl }, context_instance=RequestContext(request) )   
+
+def delp(request, pr_id):
+    mensaje = "Se esta procediendo a borrar la estrategia: "
+    mensaje =+ pr_id
+    anterior = "../../../"
+    borrado = burl+"estrategia/rmv/"
+    borrado += pr_id
+    borrado += "/"
+    return render_to_response('plan/confirm.html', {'message' : mensaje, 'prev_link' : anterior, 'action_link' : borrado, 'bu' : burl }, context_instance=RequestContext(request))
+
+@login_required(login_url = burl + "accounts/login/")
+def delP(request, pr_id):
+    pr = proyecto.objects.get(pk=pr_id)
+    pr.activo = False
+    pr.save()
+    return HttpResponseRedirect('../../../')
+
+def adda(request):
+   if request.method == 'POST':
+      ad = AccionForm(request.POST, request.FILES)
+      if ad.is_valid():
+         ad.save()
+         return HttpResponseRedirect('../../')
+      else:
+         msg = "Se produjo un error al capturar los datos"
+         return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
+   else:
+      ad = MetaForm(queryset=accion.objects.none())
+   return render_to_response('plan/accion_edit.html', {'af': ad, 'bu' : burl }, context_instance=RequestContext(request) )   
+
+def dela(request, ac_id):
+    mensaje = "Se esta procediendo a borrar la estrategia: "
+    mensaje =+ ac_id
+    anterior = "../../../"
+    borrado = burl+"estrategia/rmv/"
+    borrado += ac_id
+    borrado += "/"
+    return render_to_response('plan/confirm.html', {'message' : mensaje, 'prev_link' : anterior, 'action_link' : borrado, 'bu' : burl }, context_instance=RequestContext(request))
+
+@login_required(login_url = burl + "accounts/login/")
+def delA(request, ac_id):
+    ac = proyecto.objects.get(pk=ac_id)
+    ac.activo = False
+    ac.save()
+    return HttpResponseRedirect('../../../')
 
 def opt(request):
     custgroup = Group.objects.get(name="manager") 
@@ -159,16 +273,52 @@ def opt(request):
     ps = ['accion']
     return render_to_response('plan/opciones.html', {'op' : ps})
 
+@login_required(login_url = burl + "accounts/login/")
 def obj(request):
-    r = "Lista de Objetivos<ul>"
+    r = "Impresion general<br><a href=\"javascript:window.print()\">Imprimir</a><br><a href=\"javascript:javascript:history.go(-1)\">Regresar</a><ul>"
     ol = objetivo.objects.order_by("id")
     for o in ol:
-        r += "<li>%s: " %(o.nombre)
+        if not o.activo:
+           r += "<i>"
+        r += "<li>Objetivo %s: %s "%(o.id,o.nombre)
+        r += "<ul>"
         for mh in o.hijas():
-	    mo = meta.objects.filter(pk=mh.id)
-	    for mid in mo:
-                r += "<th scope=\"row\"><a href=\"/goremo/admin/captura/meta/%s/\">%s</a></th> " %(mid.id,mid.nombre)
-        r += "</li>"
+	    mo = meta.objects.get(pk=mh.id)
+            if not mo.activo:
+               r += "<i>"
+            r += "<li>Meta %s.%s: %s " %(o.id,mo.id,mo.nombre)
+            r += "<ul>"
+            for eh in mo.hijas():
+               eo = estrategia.objects.get(pk=eh.id)
+#               if not eo.activo:
+#                  r += "<i>"
+               r += "<li>Estrategia %s.%s.%s: %s " %(o.id,mo.id,eo.id,eo.nombre)
+               r += "<ul>"
+               for ph in eo.hijas():
+                  po = proyecto.objects.get(pk=ph.id)
+                  if not po.activo:
+                     r += "<i>"
+                  r += "<li>Proyecto %s.%s.%s.%s: %s " %(o.id,mo.id,eo.id,po.id,po.nombre)
+                  r += "<ul>"
+                  for ah in po.hijas():
+                     ao = accion.objects.get(pk=ah.id)
+                     if not ao.activo:
+                        r += "<i>"
+                     r += "<li>Accion %s.%s.%s.%s.%s: %s </li>" %(o.id,mo.id,eo.id,po.id,ao.id,ao.nombre)
+                     if not ao.activo:
+                        r += "</i>"
+                  r += "</ul></li>"
+                  if not po.activo:
+                     r += "<i>"
+               r += "</ul></li>"
+#               if not eo.activo:
+#                  r += "<i>"
+            r += "</ul></li>"
+            if not mo.activo:
+               r += "<i>"
+        r += "</ul></li>"
+        if not o.activo:
+           r += "</i>"
     r += "</ul>"
     return HttpResponse(r)
 
@@ -233,6 +383,12 @@ def objetivo_edit(request, objetivo_id):
                               {'objetivo_form': form,
                                'objetivo_id': objetivo_id},
                               context_instance=RequestContext(request))
+
+def adm(request):
+#    forma = Accioninline()
+#    forma = accionForm(request.POST, request.FILES)
+    
+    return render_to_response('plan/form.html', {'formset' : forma}, context_instance=RequestContext(request))
 
 def meta_edit(request, meta_id):
     Meta = meta.objects.get(pk=meta_id)

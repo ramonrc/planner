@@ -1,0 +1,20 @@
+{% extends "plan/base.html" %}
+
+{% block content %}
+    <div class="confirmation-box">
+        <p>{{ message }}</p>
+        <div>
+            <form action="{{ prev_link }}">
+	      {% csrf_token %}
+                <input type="hidden" name="next" value="{{ prev_link }}" />
+                <input type="submit" value="Cancelar operaci&oacute;n" />
+            </form>
+            <form action="{{ action_link }}" method="post">
+	      {% csrf_token %}
+                <input type="hidden" name="next" value="{{ prev_link }}" />
+                <input type="submit" value="Continuar" />
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
