@@ -1,11 +1,8 @@
 {% extends "plan/base.html" %}
-{% block migajas %}<form action="impresion/"><input type="hidden" name="next" value="{{bu}}" /><input type="submit" value="Impresion general"/></form>{% endblock %}
+{% block migajas %}<form action="impresion/"><input type="hidden" name="next" value="{{bu}}" /><input type="image" name="submit" src="/static/admin/grm/ImprimirTodo.jpg" border="0"/></form>{% endblock %}
 {% block content %}
 <p class="auto-style1">objetivos</p>
-<p class="auto-style8" style="width: 1020px">Esta es la página de entrada para 
-el ejecutivo (<em>{{ user }}</em>). En esta página el podrá revisar el progreso de los objetivos, 
-cancelar un objetivo específico, o crear un nuevo objetivo y asignarlo al 
-manager de su elección</p>
+<p class="auto-style8" style="width: 1020px">Esta es la p&aacute;gina de entrada para el ejecutivo (<em>{{ user }}</em>). En esta p&aacute;gina podr&aacute; revisar el progreso de los objetivos, accesar un objetivo para mayor informaci&oacute;n, cancelar un objetivo espec&iacute;fico, o crear un nuevo objetivo y asignarlo al manager de su elecci&oacute;n</p>
 {% if ol %}
 <table class="auto-style9" style="width: 99%">
 {% for ob in ol %}

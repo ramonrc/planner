@@ -12,7 +12,7 @@
 {% block content %}
 {% if of %}
 <div id="content-main">
-<h1>Objetivo</h1>
+<p class="auto-style1">Edici&oacute;n de Objetivo</p>
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 <form action="" method="post">
 {% csrf_token %}
@@ -21,7 +21,7 @@
             {{ field.label_tag }}: {{ field }}<br>
         {% endfor %}
 </p>  
-<input type="submit" value="Save" />
+<input type="image" name="submit" src="/static/admin/grm/guardarCambios.jpg" border="0"/>
 </form>
 </div>
 {% endif %}
