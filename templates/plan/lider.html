@@ -1,0 +1,22 @@
+{% extends "plan/base.html" %}
+{% block migajas %}{% endblock %}
+{% block content %}
+<p class="auto-style1">mis proyectos</p>
+<p class="auto-style8" style="width: 1020px">Esta es la p&aacute;gina de entrada para el l&iacute;der de proyecto (<em>{{ user }}</em>). En esta p&aacute;gina podr&aacute; revisar el progreso de sus proyectos, y accesar a un proyecto espec&iacute;fico para mayor informaci&oacute;n o tomar acciones</p>
+{% if ol %}
+<table class="auto-style9" style="width: 99%">
+{% for ob in ol %}
+	<tr>
+		<td class="auto-style2" style="width: 2699px">
+		{{ ob.id }}.- <a href="proyecto/edit/{{ ob.id }}/">{{ ob.nombre }}</a></td>
+		<td class="auto-style6">
+		<img alt="este valor se calcula" height="40" src="/static/admin/grm/{{ ob.semaforo }}.png" width="120" /></td>
+	</tr>
+{% endfor %}
+</table>
+{% endif %}
+</body>
+
+</html>
+{% endblock %}
+

@@ -34,8 +34,7 @@
 								<table style="width: 96%" align="right">
 {% for p in e.hijas %}
 									<tr><td class="auto-style16" style="width: 862px">
-										<a href="modificacion-proyecto.html">
-										  Proyecto {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</a></td>
+										<a href="{{bu}}proyecto/edit/{{p.id}}/">Proyecto {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.- {{ p.nombre }}</a></td>
 										<td class="auto-style16">
 										<img alt="" height="30" src="/static/admin/grm/{{ p.semaforo }}.png" width="90" /></td>
 									</tr>
@@ -51,7 +50,14 @@
 				</td>
 			</tr>
 {% endfor %}
+        <tr>
+                <td>
+                <a href="{{bu}}meta/add/">
+                <img id="imag13" alt="a&ntilde;adir meta" height="24" onmousedown="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaMetaPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaMeta.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaMetaFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaMetaFocus.jpg')" src="/static/admin/grm/nuevaMeta.jpg" style="border: 0" width="120" class="auto-style1" />
+        </tr>
+
 		</table>
+
 {% endif %}		
 </body>
 </html>

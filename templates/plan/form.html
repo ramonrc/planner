@@ -1,0 +1,14 @@
+<form method="post" action="">
+    {{ formset.management_form }}
+    {% for form in formset %}
+        {{ form.id }}
+        <ul>
+            <li>{{ form.nombre }}</li>
+            {% if formset.can_delete %}
+                <li>{{ form.DELETE }}</li>
+            {% endif %}
+        </ul>
+	{{ form }}
+	{{ form.pro_act }}
+    {% endfor %}
+</form>

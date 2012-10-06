@@ -16,8 +16,7 @@
 {% csrf_token %}
     {{ ef.management_form }}
 <div id="content-main">
-<h1  class="auto-style1">Estrategia</h1>
-<table>
+<h1  class="auto-style1">Estrategia {{ ef.0.id }}</h1>
 <p class="auto-style8" style="width: 1020px"><br />
 <br />
 En &eacute;sta p&aacute;gina el manager podr&aacute; {% if ei %} modificar una estrategia existente {% else %} crear una nueva estrategia para una meta ya definida{% endif %}. <br />
@@ -28,58 +27,61 @@ Los campos marcados con asterisco (*) son obligatorios </p>
         <tr>
                 <td class="auto-style10" style="height: 26px; width: 357px">Objetivo 
                 padre</td>
-                <td class="auto-style16" style="height: 26px" colspan="3">
+                <td class="auto-style16" style="height: 26px" colspan="2">
                 {{ ei.padre.padre }}</td>
         </tr>
         <tr>
                 <td class="auto-style10" style="height: 26px; width: 357px">Meta&nbsp;padre</td>
-                <td class="auto-style16" style="height: 26px" colspan="3">
+                <td class="auto-style16" style="height: 26px" colspan="2">
                 {{ ei.padre }}</td>
+                <td style="display:none;">
+                {{ ef.0.padre }}</td>
         </tr>
 {% else %}
         <tr>
                 <td class="auto-style10" style="height: 26px; width: 357px">Meta&nbsp;padre</td>
-                <td class="auto-style16" style="height: 26px" colspan="3">
+                <td class="auto-style16" style="height: 26px" colspan="2">
                 {{ ef.0.padre }}</td>
         </tr>
 {% endif %}
         <tr>
                 <td class="auto-style10" style="height: 26px; width: 357px">Nombre de la estrategia *</td>
-                <td class="auto-style16" style="height: 26px" colspan="3">
+                <td class="auto-style16" style="height: 26px" colspan="2">
                 {{ ef.0.nombre }}</td>
         </tr>
         <tr>
                 <td class="auto-style10" style="height: 72px; width: 357px">Descripci&oacute;n de la estrategia</td>
-                <td class="auto-style16" style="height: 72px" colspan="3">
+                <td class="auto-style16" style="height: 72px" colspan="2">
                 {{ ef.0.descripcion }}</td>
         </tr>
 {% if eh %}
         <tr>
-                <td class="auto-style10" style="height: 35px; " rowspan="3">Proyectos relacionados *</td> 
+                <td class="auto-style10" style="height: 35px; " rowspan="5">Proyectos relacionados *</td> 
                 {% for proj in eh %}
-                <td class="auto-style10" style="height: 35px; width: 582px">
+                <td class="auto-style16" style="height: 35px; width: 582px">
                 <a href="{{bu}}proyecto/edit/{{proj.id}}">{{ proj.nombre }}</a></td>
-                <td class="auto-style10" style="height: 35px; width: 582px">
+                <td class="auto-style16" style="height: 35px; width: 582px">
                 <a href="mailto:{{ proj.responsable.email }}">{{ proj.responsable.get_full_name }}</a></td>
                 <td class="auto-style10" style="height: 35px; ">
                 <a href="{{bu}}proyecto/rm/{{proj.id}}/"><img id="imag{{ eh.id }}" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'imag{{ eh.id }}',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag{{ eh.id }}',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag{{ eh.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag{{ eh.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
+		</tr>
                {% endfor %}
         </tr>
 {% endif %}
         <tr>
-                <td class="auto-style17" style="height: 35px; " colspan="3">
+                <td class="auto-style17" style="height: 35px; " colspan="2">
                 <a href="{{bu}}proyecto/add/">
-                <img id="img13" alt="a&ntilde;adir proyecto" height="22" onmousedown="FP_swapImg(1,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevoProyectoPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevoProyecto.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevoProyectoFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img13',/*url*/'/static/admin/grm/nuevoProyecto.jpg')" src="button70.jpg" style="border: 0" width="112" class="auto-style1" />
+                <img id="imag13" alt="a&ntilde;adir proyecto" height="22" onmousedown="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevoProyectoPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevoProyecto.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevoProyectoFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevoProyectoFocus.jpg')" src="/static/admin/grm/nuevoProyecto.jpg" style="border: 0" width="112" class="auto-style1" />
         </tr>
         <!-- tr>
                 <td class="auto-style10" style="height: 26px; width: 357px">Comentarios</td>
-                <td class="auto-style16" style="height: 26px" colspan="3">
+                <td class="auto-style16" style="height: 26px" colspan="2">
                 log de comentarios donde se van acumulando las entradas del manager<br />
                 <br />
                 <textarea name="TextArea1" rows="2" style="width: 732px">nuevo comentario</textarea></td>
         </tr -->
         <tr>
-                <td class="auto-style13" colspan="3">
+                <td class="auto-style13" colspan="2">
                 <input type="submit" value="Guardar Cambios" />
         </tr>
 </table>

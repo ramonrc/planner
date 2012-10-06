@@ -14,7 +14,7 @@
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 <form action="" method="post">
 {% csrf_token %}
-    {{ mf.management_form }}
+{{ mf.management_form }}
 <div id="content-main">
 <h1 class="auto-style1">Meta {{ mf.0.id }}</h1>
 <p class="auto-style8" style="width: 1020px"><br />

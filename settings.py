@@ -120,9 +120,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'captura',
-    'seguimiento',
-    #'polls'
+    'captura'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -148,6 +146,6 @@ LOGGING = {
     }
 }
 
-AUTH_PROFILE_MODULE = 'captura.telefonos_persona'
+AUTH_PROFILE_MODULE = 'captura.persona'
 FORCE_SCRIPT_NAME = '/goremo' 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'

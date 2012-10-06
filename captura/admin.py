@@ -1,7 +1,6 @@
-from captura.models import telefonos_persona,persona,objetivo,meta,estrategia,proyecto,accion,unidad_meta
-from django.contrib.auth.models import User,Group
+from captura.models import telefonos_persona,persona,objetivo,meta,estrategia,proyecto,accion,unidad_meta,persona,comentario,problema,com_est,com_pro,com_acc
 from django.contrib import admin
-from seguimiento.models import com_est,com_pro,com_acc
+from django.contrib.auth.models import Group
 
 class EstrChoice(admin.TabularInline):
     model = com_est
@@ -65,7 +64,7 @@ class Met(admin.ModelAdmin):
 class Pro(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['nombre','descripcion','padre','responsable']}),
-        ('Avanzado', {'fields': ['necesita','necesario'], 'classes': ['collapse']})]
+        ('Avanzado', {'fields': ['necesita'], 'classes': ['collapse']})]
     inlines = [ProyChoice]
     def queryset(self, request):
         custgroup = Group.objects.get(name="ejecutivo") 
@@ -77,7 +76,7 @@ class Pro(admin.ModelAdmin):
 class Act(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['nombre','descripcion','padre','responsable','fecha','avance']}),
-        ('Avanzado', {'fields': ['necesita','necesario'], 'classes': ['collapse']})]
+        ('Avanzado', {'fields': ['necesita'], 'classes': ['collapse']})]
     inlines = [AcciChoice]
     def queryset(self, request):
         custgroup = Group.objects.get(name="ejecutivo") 

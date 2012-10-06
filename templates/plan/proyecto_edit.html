@@ -1,4 +1,4 @@
-{% extends "plan/index.html" %}
+{% extends "plan/base.html" %}
 {% load i18n %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
@@ -10,17 +10,98 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-<div id="content-main">
-<h1>Seguimiento de Proyecto</h1>
+{% if pf %}
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
-<form action="/goremo/captura/proyecto_edit/{{ proyecto_id }}/" method="post">
+<form action="" method="post">
 {% csrf_token %}
-<table>
-{{ proyecto_form.as_table }}
-{{ proyecto_pro.as_table }}
+    {{ pf.management_form }}
+<div id="content-main">
+<h1  class="auto-style1">Proyecto {{ pf.0.id }}</h1>
+<p class="auto-style8" style="width: 1020px"><br />
+<br />
+En esta p&aacute;gina el manager podr&aacute; {% if pi %} modificar un proyecto existente {% else %}  crear un proyecto nuevo para una estrategia determinada{% endif %}. <br />
+Las actividades relacionadas al proyecto se desplegar&aacute;n pero no podr&aacute;n modificarse pues esta actividad es responsabilidad del lider del proyecto.<br />
+Cuando se salvan cambios, se envia un e-mail al lider del proyecto.<br />
+<br />
+Los campos marcados con asterisco (*) son obligatorios </p>
+
+<table style="width: 99%; height: 253px" class="auto-style9">
+{% if pi %}
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Meta padre</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ pi.padre.padre }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Estrategia padre</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ pi.padre }}</td>
+                <td style="display:none;">
+                {{ pf.0.padre }}</td>
+        </tr>
+{% else %}
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Estrategia padre</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ pf.0.padre }}</td>
+        </tr>
+{% endif %}
+
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Nombre del proyecto *</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+{% if mgr %}
+                {{ pf.0.nombre }}</td>
+{% else %}
+                {{ pi.nombre }}</td>
+{% endif %}
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Lider del proyecto *</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+{% if mgr %}
+                {{ pf.0.responsable }}</td>
+{% else %}
+                {{ pi.responsable }}</td>
+{% endif %}
+
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 72px; width: 357px">Descripci&oacute;n del proyecto</td>
+                <td class="auto-style16" style="height: 72px" colspan="2">
+                {{ pf.0.descripcion }}</td>
+        </tr>
+{% if ph %}
+        <tr>
+                <td class="auto-style10" style="height: 35px; " rowspan="5">Acciones relacionadas *</td> 
+                {% for Acc in ph %}
+                <td class="auto-style16" style="height: 35px; width: 582px">
+                <a href="{{bu}}accion/edit/{{Acc.id}}">{{ Acc.nombre }}</a></td>
+                <td class="auto-style16" style="height: 35px; width: 582px">
+                <a href="mailto:{{ Acc.responsable.email }}">{{ Acc.responsable.get_full_name }}</a></td>
+                <td class="auto-style10" style="height: 35px; ">
+                <a href="{{bu}}accion/rm/{{Acc.id}}/"><img id="imag{{ ph.id }}" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'imag{{ ph.id }}',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag{{ ph.id }}',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag{{ ph.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag{{ ph.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
+		</tr>
+               {% endfor %}
+{% endif %}
+        <tr>
+                <td class="auto-style17" style="height: 35px; " colspan="2">
+                <a href="{{bu}}accion/add/">
+                <img id="imag13" alt="a&ntilde;adir accion" height="22" onmousedown="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccion.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionFocus.jpg')" src="/static/admin/grm/nuevaAccion.jpg" style="border: 0" width="112" class="auto-style1" />
+        </tr>
+        <!-- tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Comentarios</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                log de comentarios donde se van acumulando las entradas del manager<br />
+                <br />
+                <textarea name="TextArea1" rows="2" style="width: 732px">nuevo comentario</textarea></td>
+        </tr -->
+        <tr>
+                <td class="auto-style13" colspan="2">
+                <input type="submit" value="Guardar Cambios" />
+        </tr>
 </table>
-<input type="submit" value="Save" />
 </form>
 </div>
+{% endif %}
 {% endblock %}
