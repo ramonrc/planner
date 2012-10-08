@@ -11,7 +11,7 @@
 </p>
 <p class="auto-style12" style="width: 980px">En esta pantalla el ejecutivo (<em>{{ user }}</em>) podr&aacute; revisar los detalles de progreso de un objetivo en espec&iacute;fico. Tambi&eacute;n podr&aacute; borrar este objetivo. Los campos son de solo lectura. El correo electr&oacute;nico del manager se proporciona como hiperv&iacute;nculo en su nombre.</p>
 {% if ob %}
-		<table class="auto-style15" style="width: 83%">
+		<table class="auto-style15" style="width: 91%">
 			<tr>
 				<td class="auto-style17" style="width: 1631px">
 				Manager a cargo</td>
@@ -20,8 +20,12 @@
 				<td class="auto-style17" style="width: 1631px">Estado del objetivo</td>
 				<td class="auto-style16" style="width: 176px">
 				<img alt="" class="auto-style13" height="50" src="/static/admin/grm/{{ ob.0.semaforo }}.png" width="150" /></td>
-			</tr>
-			</table>
+                        <td><a href="{{bu}}objetivo/rm/{{ ob.0.id }}/"><img id="img3" alt="cancelar" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a><br>
+                          <a href="{{bu}}objetivo/edit/{{ ob.0.id }}/"><img id="img4" alt="editar" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img4',/*url*/'/static/admin/grm/modificarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img4',/*url*/'/static/admin/grm/modificar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img4',/*url*/'/static/admin/grm/modificarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img4',/*url*/'/static/admin/grm/modificarFocus.jpg')" src="/static/admin/grm/modificar.jpg" style="border: 0" width="80" /></a>
+</td>
+                        </tr>
+                        </table>
+
 		<table class="auto-style15" style="width: 83%">
 {% for m in ob.0.hijas %}
 			<tr>
@@ -52,6 +56,20 @@
 										<td class="auto-style16">
 										<img alt="" height="30" src="/static/admin/grm/{{ p.semaforo }}.png" width="90" /></td>
 									</tr>
+		                                                        <tr>
+                 		                                               <td colspan="2" class="auto-style18">
+                                		                                <table style="width: 96%" align="right">
+{% for a in p.hijas %}
+                                             		                        <tr>
+                                                        		                        <td class="auto-style16" style="width: 862px">
+                                                                        		        Accion {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.{{ a.id }}.- {{ a.nombre }}</td>
+                                                                               			 <td class="auto-style16">
+                                                                               		 <img alt="" height="30" src="/static/admin/grm/{{ a.semaforo }}.png" width="90" /></td>
+ 	                                                                        </tr>
+{% endfor %}
+        		                                                        </table>
+                        		                                        </td>
+                                        		                </tr>
 {% endfor %}
 								</table>
 								</td>
@@ -66,7 +84,6 @@
 {% endfor %}
 		</table>
 {% endif %}		
-		<a href="{{bu}}objetivo/rm/{{ ob.0.id }}/"><img id="img3" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img3',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a>
 </body>
 </html>
 {% endblock %}

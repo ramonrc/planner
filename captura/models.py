@@ -66,32 +66,33 @@ class objetivo(models.Model):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_meta 
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in meta.objects.filter(id__contains=o):
+                for no in meta.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def semaforo(self):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id
+            SELECT DISTINCT id
             FROM captura_meta
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         ns = ""
+        sih = False
         for hij in cursor.fetchall():
-                hs = meta.objects.get(pk=hij[0]).semaforo()
-                if ( hs == "amarillo"):
-                    ns = hs
-                if ( hs == "rojo" ):
-                    return hs
-        if (ns == "" and cursor.fetchall()): return "verde"
+            sih = True
+            hs = meta.objects.get(pk=hij[0]).semaforo()
+            if ( hs == "amarillo"):
+                ns = hs
+            if ( hs == "rojo" ):
+                return hs
+        if (ns == "" and sih): return "verde"
         else: return "amarillo"
     def __unicode__(self):
         return self.nombre
@@ -110,29 +111,27 @@ class meta(models.Model):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_estrategia
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in estrategia.objects.filter(id__contains=o):
+                for no in estrategia.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def avance (self):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_estrategia
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         av = 0
         count = 0
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in estrategia.objects.filter(id__contains=o):
+                for no in estrategia.objects.filter(pk=oll[0]):
                     for ol in no.hijas():
                         for o in ol.hijas():
                             count = count + 1
@@ -144,18 +143,20 @@ class meta(models.Model):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_estrategia
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         ns = ""
+        sih = False
         for hij in cursor.fetchall():
-                hs = estrategia.objects.get(pk=hij[0]).semaforo()
-                if ( hs == "amarillo"):
-                    ns = hs
-                if ( hs == "rojo" ):
-                    return hs
-        if (ns == "" and cursor.fetchall()): return "verde"
+            sih = True
+            hs = estrategia.objects.get(pk=hij[0]).semaforo()
+            if ( hs == "rojo" ):
+                return hs
+            if ( hs == "amarillo"):
+                ns = hs
+        if (ns == "" and sih): return "verde"
         else: return "amarillo"
     def __unicode__(self):
         return self.nombre
@@ -170,46 +171,46 @@ class estrategia(models.Model):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_proyecto
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in proyecto.objects.filter(id__contains=o):
+                for no in proyecto.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def coments(self):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_com_est
-            WHERE %s IN ( sobre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in accion.objects.filter(id__contains=o):
+                for no in accion.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def semaforo(self):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_proyecto
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         ns = ""
+        sih = False
         for hij in cursor.fetchall():
-                hs = proyecto.objects.get(pk=hij[0]).semaforo()
-                if ( hs == "amarillo"):
-                    ns = hs
-                if ( hs == "rojo" ):
-                    return hs
-        if (ns == "" and cursor.fetchall()): return "verde"
+            sih = True
+            hs = proyecto.objects.get(pk=hij[0]).semaforo()
+            if ( hs == "amarillo"):
+                ns = hs
+            if ( hs == "rojo" ):
+                return hs
+        if (ns == "" and sih): return "verde"
         else: return "amarillo"
     def __unicode__(self):
         return self.nombre
@@ -226,57 +227,53 @@ class proyecto(models.Model):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_accion
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in accion.objects.filter(id__contains=o):
+                for no in accion.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def necesario(self):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_proyecto
-            WHERE %s IN ( necesita_id )
+            WHERE necesita_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in accion.objects.filter(id__contains=o):
+                for no in accion.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def coments(self):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_com_pro
-            WHERE %s IN ( sobre_id )
+            WHERE sobre_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in accion.objects.filter(id__contains=o):
+                for no in accion.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def avance (self):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_accion
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         av = 0
         count = 0
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in accion.objects.filter(id__contains=o):
+                for no in accion.objects.filter(pk=oll[0]):
                     count = count + 1
                     av =+ no.avance
         if ( count == 0 ):
@@ -286,18 +283,20 @@ class proyecto(models.Model):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_accion
-            WHERE %s IN ( padre_id )
+            WHERE padre_id = %s AND activo = True
             """, [self.id])
         ns = ""
+        sih = False
         for hij in cursor.fetchall():
-                hs = accion.objects.get(pk=hij[0]).semaforo()
-                if ( hs == "amarillo"):
-                    ns = hs
-                if ( hs == "rojo" ):
-                    return hs
-        if (ns == "" and cursor.fetchall()): return "verde"
+            sih = True
+            hs = accion.objects.get(pk=hij[0]).semaforo()
+            if ( hs == "rojo" ):
+                return hs
+            if ( hs == "amarillo"):
+                ns = hs
+        if (ns == "" and sih): return "verde"
         else: return "amarillo"
     def __unicode__(self):
         return self.nombre
@@ -317,28 +316,26 @@ class accion(models.Model):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_com_acc
-            WHERE %s IN ( sobre_id )
+            WHERE sobre_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in accion.objects.filter(id__contains=o):
+                for no in accion.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def necesario(self):
         from django.db import connection
         cursor = connection.cursor()
         cursor.execute("""
-            SELECT id 
+            SELECT DISTINCT id 
             FROM captura_accion
-            WHERE %s IN ( necesita_id )
+            WHERE necesita_id = %s AND activo = True
             """, [self.id])
         results = []
         for oll in cursor.fetchall():
-            for o in oll:
-                for no in accion.objects.filter(id__contains=o):
+                for no in accion.objects.filter(pk=oll[0]):
                     results.append(no)
         return results
     def semaforo(self):

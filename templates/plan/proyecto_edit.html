@@ -19,12 +19,15 @@
 <h1  class="auto-style1">Proyecto {{ pf.0.id }}</h1>
 <p class="auto-style8" style="width: 1020px"><br />
 <br />
+{% if mgr %}
 En esta p&aacute;gina el manager podr&aacute; {% if pi %} modificar un proyecto existente {% else %}  crear un proyecto nuevo para una estrategia determinada{% endif %}. <br />
 Las actividades relacionadas al proyecto se desplegar&aacute;n pero no podr&aacute;n modificarse pues esta actividad es responsabilidad del lider del proyecto.<br />
 Cuando se salvan cambios, se envia un e-mail al lider del proyecto.<br />
 <br />
 Los campos marcados con asterisco (*) son obligatorios </p>
-
+{% else %}
+En esta p&aacute;gina el l&iacute;der de proyecto podr&aacute; darle seguimiento a un proyecto espec&iacute;fico. La informaci&oacute;n relevante es presentada como referencia, y el l&iacute;der podr&aacute; modificar la descripci&oacute;n del proyecto, borrar o accesar acciones espec&iacute;ficas, o a&ntilde;adir una nueva acci&oacute;n.<br /></p>
+{% endif %}
 <table style="width: 99%; height: 253px" class="auto-style9">
 {% if pi %}
         <tr>
@@ -48,21 +51,33 @@ Los campos marcados con asterisco (*) son obligatorios </p>
 {% endif %}
 
         <tr>
+{% if mgr %}
                 <td class="auto-style10" style="height: 26px; width: 357px">Nombre del proyecto *</td>
+{% else %}
+                <td class="auto-style10" style="height: 26px; width: 357px">Nombre del proyecto</td>
+{% endif %}
                 <td class="auto-style16" style="height: 26px" colspan="2">
 {% if mgr %}
                 {{ pf.0.nombre }}</td>
 {% else %}
                 {{ pi.nombre }}</td>
+                <td style="display:none;">
+                {{ pf.0.nombre }}</td>
 {% endif %}
         </tr>
         <tr>
+{% if mgr %}
                 <td class="auto-style10" style="height: 26px; width: 357px">Lider del proyecto *</td>
+{% else %}
+                <td class="auto-style10" style="height: 26px; width: 357px">Lider del proyecto</td>
+{% endif %}
                 <td class="auto-style16" style="height: 26px" colspan="2">
 {% if mgr %}
                 {{ pf.0.responsable }}</td>
 {% else %}
                 {{ pi.responsable }}</td>
+                <td style="display:none;">
+                {{ pf.0.responsable }}</td>
 {% endif %}
 
         </tr>
@@ -73,7 +88,11 @@ Los campos marcados con asterisco (*) son obligatorios </p>
         </tr>
 {% if ph %}
         <tr>
+{% if mgr %}
                 <td class="auto-style10" style="height: 35px; " rowspan="5">Acciones relacionadas *</td> 
+{% else %}
+                <td class="auto-style10" style="height: 35px; " rowspan="5">Acciones relacionadas</td>
+{% endif %}
                 {% for Acc in ph %}
                 <td class="auto-style16" style="height: 35px; width: 582px">
                 <a href="{{bu}}accion/edit/{{Acc.id}}">{{ Acc.nombre }}</a></td>
@@ -84,11 +103,14 @@ Los campos marcados con asterisco (*) son obligatorios </p>
 		</tr>
                {% endfor %}
 {% endif %}
+{% if mgr %}
+{% else %}
         <tr>
                 <td class="auto-style17" style="height: 35px; " colspan="2">
                 <a href="{{bu}}accion/add/">
                 <img id="imag13" alt="a&ntilde;adir accion" height="22" onmousedown="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccion.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionFocus.jpg')" src="/static/admin/grm/nuevaAccion.jpg" style="border: 0" width="112" class="auto-style1" />
         </tr>
+{% endif %}
         <!-- tr>
                 <td class="auto-style10" style="height: 26px; width: 357px">Comentarios</td>
                 <td class="auto-style16" style="height: 26px" colspan="2">

@@ -1,4 +1,4 @@
-{% extends "plan/index.html" %}
+{% extends "plan/base.html" %}
 {% load i18n %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
@@ -10,40 +10,161 @@
 {% block breadcrumbs %}{% endblock %}
 
 {% block content %}
-<div id="content-main">
-<h1>Seguimiento de Accion</h1>
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-
-<form action="/goremo/captura/accion_edit/{{ accion_id }}/" method="post">
+{% if af %}
+<form action="" method="post">
 {% csrf_token %}
-{%for f in form.management_form%}
-    {{f}}
-{%endfor%}
-<table>
-    <tr>
-    {% for field in form.forms.0 %}
-        {% if not field.is_hidden %}
-            <th>{{field.label}}</th>
-        {% endif %}
-    {% endfor %}
-    </tr>
-    {%for f in form.forms%}
+    {{ af.management_form }}
+<div id="content-main">
+<h1  class="auto-style1">Acci&oacute;n {{ af.0.id }}</h1>
+<p class="auto-style8" style="width: 1020px"><br />
+En esta p&aacute;gina el {% if lid %} lider de proyecto ({{ ai.padre.responsable.get_full_name }}) podr&aacute; modificar una acci&oacute;n existente o crear una nueva para su proyecto espec&iacute;fico. {% else %} responsable de la acci&oacute;n ({{ ai.responsable.get_full_name }}) podr&aacute; darle seguimiento a esta.{% endif %} <br />
+Cuando se salvan los cambios, un correo-e se enviar&aacute; al responsable de la acci&oacute;n <br/>
+<br />
+{% if lid %} 
+Los campos marcados con asterisco (*) son obligatorios </p>
+{% endif %}
+<table style="width: 99%; height: 253px" class="auto-style9">
+<td style="display:none;">{{ af.1.as_p }}</td>
+{% if ai %}
         <tr>
-        {%for field in f%} 
-            {% if not field.is_hidden %}
-                <td valign="bottom">{{field}}</td>
-            {%else%}
-                {{field}}
-            {% endif %}
-        {%endfor%}
+                <td class="auto-style10" style="height: 26px; width: 357px">Estrategia padre</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ ai.padre.padre }}</td>
         </tr>
-    {%endfor%}
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Proyecto padre</td>
+                <td class="auto-style16" style="height: 26px" colspan="1">
+                {{ ai.padre }}</td>
+                <td style="display:none;">
+                {{ af.0.padre }}</td>
+{% else %}
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">proyecto padre</td>
+                <td class="auto-style16" style="height: 26px" colspan="1">
+                {{ af.0.padre }}</td>
+{% endif %}
+{% if lid %}
+        </tr>
+{% else %}
+                <td class="auto-style18" style="height: 26px; width: 126px;" colspan="3">
+                Lider del proyecto</td>
+                <td class="auto-style16" style="height: 26px; width: 158px;">
+                <em><a href="mailto:{{ ai.padre.responsable.email }}">{{ ai.padre.responsable.get_full_name }}</a></em></td>
+        </tr>
+{% endif %}
+        <tr>
+{% if lid %}
+                <td class="auto-style10" style="height: 26px; width: 357px">Nombre de la acci&oacute;n *</td>
+{% else %}
+                <td class="auto-style10" style="height: 26px; width: 357px">Nombre de la acci&oacute;n</td>
+{% endif %}
+                <td class="auto-style16" style="height: 26px" colspan="5">
+{% if lid %}
+                {{ af.0.nombre }}</td>
+{% else %}
+                {{ ai.nombre }}</td>
+                <td style="display:none;">
+                {{ af.0.nombre }}</td>
+
+{% endif %}
+        </tr>
+        <tr>
+{% if lid %}
+                <td class="auto-style10" style="height: 37px; width: 357px">Responsable de la acci&oacute;n *</td>
+{% else %}
+                <td class="auto-style10" style="height: 37px; width: 357px">Responsable de la acci&oacute;n</td>
+{% endif %}
+                <td class="auto-style16" style="height: 37px" colspan="5">
+{% if lid %}
+                {{ af.0.responsable }}</td>
+{% else %}
+                {{ ai.responsable.get_full_name }}</td>
+                <td style="display:none;">
+                {{ af.0.responsable }}</td>
+
+{% endif %}
+
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 72px; width: 357px">Descripci&oacute;n de la acci&oacute;n</td>
+                <td class="auto-style16" style="height: 72px" colspan="5">
+{% if lid %}
+                {{ af.0.descripcion }}</td>
+{% else %}
+                {{ ai.descripcion }}</td>
+{% endif %}
+
+        </tr>
+        <tr>
+{% if lid %}
+                <td class="auto-style10" style="height: 37px; width: 357px">Fecha de cumplimiento *</td>
+{% else %}
+                <td class="auto-style10" style="height: 37px; width: 357px">Fecha de cumplimiento</td>
+{% endif %}
+                <td class="auto-style16" style="height: 37px" colspan="1">
+{% if lid %}
+                {{ af.0.fecha}}</td>
+{% else %}
+                {{ ai.fecha }}</td>
+                <td style="display:none;">
+                {{ af.0.fecha }}</td>
+
+{% endif %}
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 35px; " colspan="1">Porcentaje de avance&nbsp; </td>
+                <td class="auto-style16" style="height: 37px" colspan="1">
+		{{ af.0.avance }}</td>
+        </tr>
+        <!--tr>
+                <td class="auto-style10" rowspan="3">Acciones relacionadas </td>
+                <td class="auto-style10" style="height: 35px; width: 623px" colspan="3">
+                <a href="modificacion-accion.html">acci\xc3\xb3n 1</a></td>
+                <td class="auto-style10" style="height: 35px; " colspan="2">
+                <img id="img10" alt="remover" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img10',/*url*/'button30.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img10',/*url*/'button2E.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img10',/*url*/'button2F.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img10',/*url*/'button2F.jpg')" src="button2E.jpg" style="border: 0" width="100" class="auto-style1" />
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 35px; width: 623px" colspan="3">
+                <a href="modificacion-accion.html">acci\xc3\xb3n 2</a></td>
+                <td class="auto-style10" style="height: 35px; " colspan="2">
+                <img id="img12" alt="remover" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img12',/*url*/'button3C.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img12',/*url*/'button37.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img12',/*url*/'button3B.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img12',/*url*/'button3B.jpg')" src="button37.jpg" style="border: 0" width="100" class="auto-style1" />
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Comentarios</td>
+                <td class="auto-style16" style="height: 26px" colspan="5">
+                log de comentarios donde se van acumulando las entradas del manager<br />
+                <br />
+                <textarea name="TextArea1" rows="2" style="width: 732px">nuevo comentario</textarea></td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 380px">Problemas</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                log de problemas donde se van acumulando las entradas<br />
+                <br />
+                <textarea name="TextArea2" rows="2" style="width: 472px">nuevo problema</textarea></td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                <br />
+                <br />
+                <img id="img14" alt="borrar problema" height="35" onmousedown="FP_swapImg(1,0,/*id*/'img14',/*url*/'button42.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img14',/*url*/'button40.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img14',/*url*/'button41.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img14',/*url*/'button41.jpg')" src="button40.jpg" style="border: 0" width="110" class="auto-style1" />
+                <td class="auto-style16" style="height: 26px; width: 158px;">
+                Severidad del problema<br />
+                <br />
+                <br />
+                <select name="Select3" style="width: 144px; height: 16px">
+                <option>Alta</option>
+                <option>Baja</option>
+                </select><br />
+                </td>
+                </tr-->
+        <tr>    
+                 <td style="display:none;">
+                {{ af.0.necesita }}</td>
+
+                <td class="auto-style13" colspan="2">
+                <input type="submit" value="Guardar Cambios" />
+        </tr>
 </table>
-<table>
-{{ accion_form.as_table }}
-{{ accion_pro.as_table }}
-{{ accion_form.management_form }}</table>
-<input type="submit" value="Save" />
 </form>
 </div>
+{% endif %}
 {% endblock %}

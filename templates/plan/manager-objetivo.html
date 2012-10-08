@@ -11,15 +11,16 @@
 			</tr>
 			</table>
 {% for m in ob.0.hijas %}
-		<table class="auto-style15" style="width: 83%">
+		<table class="auto-style15" style="width: 91%">
 			<tr>
 				<td class="auto-style9">
 				<table style="width: 94%" align="right">
 					<tr>
 						<td class="auto-style16" style="width: 818px">
 						<a href="{{bu}}meta/edit/{{ m.id }}/">Meta {{ ob.0.id }}.{{ m.id }}.- {{ m.nombre }}</a></td>
-						<td class="auto-style16" style="width: 42px">
-						<img alt="" height="40" src="/static/admin/grm/{{ m.semaforo }}.png" width="120" /></td>
+                                                <td class="auto-style16" style="width: 42px">
+                                                <img alt="" height="40" src="/static/admin/grm/{{ m.semaforo }}.png" width="120" /></td>
+                                                <td><a href="{{bu}}meta/rm/{{ m.id }}/"><img id="imag{{ m.id }}" alt="borrar" height="20" onmousedown="FP_swapImg(1,0,/*id*/'imag{{ m.id }}',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag{{ m.id }}',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag{{ m.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag{{ m.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
 					</tr>
 					<tr>
 						<td colspan="2">
@@ -38,6 +39,18 @@
 										<td class="auto-style16">
 										<img alt="" height="30" src="/static/admin/grm/{{ p.semaforo }}.png" width="90" /></td>
 									</tr>
+                                                        		<tr><td colspan="2" class="auto-style18">
+                                                                		<table style="width: 96%" align="right">
+{% for a in p.hijas %}
+                                                                        		<tr><td class="auto-style16" style="width: 862px">
+                                                                                		Accion {{ ob.0.id }}.{{ m.id }}.{{ e.id }}.{{ p.id }}.{{ a.id }}.- {{ a.nombre }}</td>
+                                                                                		<td class="auto-style16">
+                                                                                		<img alt="" height="30" src="/static/admin/grm/{{ a.semaforo }}.png" width="90" /></td>
+                                                                        		</tr>
+{% endfor %}
+            		                                                    </table>
+                        		                                  </td>
+                                        		                </tr>
 {% endfor %}
 								</table>
 							  </td>

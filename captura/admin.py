@@ -64,26 +64,26 @@ class Met(admin.ModelAdmin):
 class Pro(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['nombre','descripcion','padre','responsable']}),
-        ('Avanzado', {'fields': ['necesita'], 'classes': ['collapse']})]
+        ('Avanzado', {'fields': ['necesita','activo'], 'classes': ['collapse']})]
     inlines = [ProyChoice]
     def queryset(self, request):
         custgroup = Group.objects.get(name="ejecutivo") 
         if custgroup in request.user.groups.all():
             return proyecto.objects.all()
         return proyecto.objects.filter(responsable=request.user)
-    list_display = ('nombre', 'responsable', 'avance', 'hijas')
+    list_display = ('nombre', 'responsable', 'activo', 'avance', 'hijas')
 
 class Act(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['nombre','descripcion','padre','responsable','fecha','avance']}),
-        ('Avanzado', {'fields': ['necesita'], 'classes': ['collapse']})]
+        ('Avanzado', {'fields': ['necesita','activo'], 'classes': ['collapse']})]
     inlines = [AcciChoice]
     def queryset(self, request):
         custgroup = Group.objects.get(name="ejecutivo") 
         if custgroup in request.user.groups.all():
             return accion.objects.all()
         return accion.objects.filter(responsable=request.user)
-    list_display = ('nombre', 'responsable', 'avance', 'fecha')
+    list_display = ('nombre', 'responsable', 'activo', 'avance', 'fecha')
 
 admin.site.register(objetivo, Obj)
 admin.site.register(meta, Met)
