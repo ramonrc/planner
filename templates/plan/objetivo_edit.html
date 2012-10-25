@@ -1,13 +1,12 @@
 {% extends "plan/base.html" %}
 {% load i18n %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
 {% block bodyclass %}dashboard{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
 
 {% block content %}
 {% if of %}
@@ -29,8 +28,10 @@ El nombre del Objetivo y el manager asignado son campos obligatorios </p>
         </tr>
         <tr>
                 <td class="auto-style10" style="height: 26px; width: 300px">Manager asignado</td>
-                <td class="auto-style16" style="height: 26px" colspan="2">
+                <td class="auto-style16" style="height: 26px" colspan="1">
                 {{ of.0.autor }}</td>
+		<td style="height: 26px">
+		<a href="{{bu}}persona" class="add_another" id="add_id_form-0-autor" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/admin/icon_addlink.gif" width="10" height="10" alt="Agregar otro/a"/></a>	
         </tr>
         <tr>
                 <td class="auto-style10" style="height: 72px; width: 300px">Descripci&oacute;n del objetivo</td>

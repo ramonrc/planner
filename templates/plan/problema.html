@@ -1,0 +1,48 @@
+{% extends "plan/base.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block content %}
+{% if prf %}
+<div id="content-main">
+<form action="" method="post">
+{% csrf_token %}
+{{ prf.management_form }}
+<p class="auto-style1">Nuevo problema{{ prf.0.id }}</p>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<p class="auto-style8" style="width: 1020px"><br />
+<br />
+Esta p&aacute;gina se usa para crear nuevos problemas o actualizar ya existentes. <br />
+Todos los campos son obligatorios</p>
+<table style="width: 99%; height: 253px" class="auto-style9">
+        <input id="id_form-0-autor" type="hidden" name="form-0-autor" value={{autor.pk}}/>
+        <input id="id_form-0-fecha" type="hidden" name="form-0-fecha" value={{fecha}}/>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 300px">descripci&oacute;n</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ prf.0.descripcion }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 300px">severidad</td>
+                <td class="auto-style16" style="height: 26px" colspan="1">
+                {{ prf.0.severidad }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 300px">Resuelto?</td>
+                <td class="auto-style16" style="height: 26px" colspan="1">
+                {{ prf.0.resuelto }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style13" colspan="2">
+                <input type="submit" value="Guardar Cambios" onclick ="parent.opener.location.reload();"/>
+        </tr>
+</table>
+</form>
+</div>
+{% endif %}
+{% endblock %}

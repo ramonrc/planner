@@ -3,14 +3,19 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.models import inlineformset_factory,modelformset_factory
 from django.contrib.admin.widgets import AdminDateWidget
-from models import objetivo,estrategia,meta,proyecto,accion,com_acc,com_pro,com_est,persona
+from models import objetivo,estrategia,meta,proyecto,accion,com_acc,com_pro,com_est,persona,problema
 import datetime
 
 ObjetivoForm = modelformset_factory(objetivo, fields=('nombre', 'autor', 'descripcion')) # falta peer
-EstrategiaForm = modelformset_factory(estrategia, fields=('nombre', 'padre', 'descripcion'))#, widgets = {'nombre': Textarea(attrs={'cols': 100, 'rows': 1}), })
+EstrategiaForm = modelformset_factory(estrategia, fields=('nombre', 'padre', 'descripcion', 'prob'))
 MetaForm = modelformset_factory(meta, fields=('nombre', 'fecha', 'cuantificador', 'unidad', 'descripcion', 'padre'))
-ProyectoForm = modelformset_factory(proyecto, fields=('nombre', 'padre', 'responsable', 'descripcion', 'necesita'))
-AccionForm = modelformset_factory(accion,fields=('nombre', 'padre', 'fecha', 'responsable', 'descripcion', 'necesita', 'avance'))
+ProyectoForm = modelformset_factory(proyecto, fields=('nombre', 'padre', 'responsable', 'descripcion', 'necesita', 'prob'))
+AccionForm = modelformset_factory(accion,fields=('nombre', 'padre', 'fecha', 'responsable', 'descripcion', 'necesita', 'avance', 'prob'))
+PersonaForm = modelformset_factory(persona)
+ProblemaForm = modelformset_factory(problema)
+ComentEstForm = modelformset_factory(com_est)
+ComentProForm = modelformset_factory(com_pro)
+ComentAccForm = modelformset_factory(com_acc)
 
 #objetivoForm = modelformset_factory(objetivo)
 #estrategiaForm = modelformset_factory(estrategia)
@@ -48,4 +53,25 @@ class objetivoFrom(ModelForm):
     class Meta:
         model = objetivo
 #        fields = ('descripcion','peer','activo')
+
+
+def get_hex(algorithm, salt, raw_password):
+        """
+        Returns a string of the hexdigest of the given plaintext password and salt
+        using the given algorithm ('md5', 'sha1' or 'crypt').
+        """
+        if algorithm == 'crypt':
+            try:
+                import crypt
+            except ImportError:
+                raise ValueError('"crypt" password algorithm not supported in this environment')
+            return crypt.crypt(raw_password, salt)
+        if algorithm == 'md5':
+            import hashlib
+            return hashlib.md5(salt + raw_password).hexdigest()
+        elif algorithm == 'sha1':
+            import hashlib
+            return hashlib.sha1(salt + raw_password).hexdigest()
+        raise ValueError("Got unknown password algorithm type in password.")
+
 

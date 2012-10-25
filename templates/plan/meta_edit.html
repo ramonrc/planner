@@ -39,9 +39,16 @@ Los campos marcados con asterisco (*) son obligatorios </p>
                 {{ mf.0.descripcion }} </td>
 	</tr>
 	<tr>
-		<td class="auto-style10" style="height: 72px; width: 357px">Fecha de cumplimiento *</td>
-		<td class="auto-style16" style="height: 72px" colspan="2">
-		{{ mf.0.fecha }} </td>
+		<td class="auto-style10" style="height: 36px; width: 357px">Fecha de cumplimiento *</td>
+                <td class="auto-style16" style="height: 36px" colspan="2">
+		{{ mf.0.fecha }}
+		</td>
+		<script>
+			$(function() {
+			$( "#id_form-0-fecha" ).datepicker({ dateFormat: "dd/mm/yy" });
+		});
+		</script> 
+
 	</tr>
 	<tr>
 		<td class="auto-style10" style="height: 35px; " colspan="3">Cuantificador*&nbsp;

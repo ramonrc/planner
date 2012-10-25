@@ -1,7 +1,9 @@
 {% extends "plan/base.html" %}
 {% load i18n %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -71,9 +73,12 @@ En esta p&aacute;gina el l&iacute;der de proyecto podr&aacute; darle seguimiento
 {% else %}
                 <td class="auto-style10" style="height: 26px; width: 357px">Lider del proyecto</td>
 {% endif %}
-                <td class="auto-style16" style="height: 26px" colspan="2">
+                <td class="auto-style16" style="height: 26px" colspan="1">
 {% if mgr %}
                 {{ pf.0.responsable }}</td>
+                <td style="height: 26px">
+                <a href="{{bu}}persona" class="add_another" id="add_id_form-0-responsable" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/admin/icon_addlink.gif" width="10" height="10" alt="Agregar otro/a"/></a>
+
 {% else %}
                 {{ pi.responsable }}</td>
                 <td style="display:none;">
@@ -111,13 +116,16 @@ En esta p&aacute;gina el l&iacute;der de proyecto podr&aacute; darle seguimiento
                 <img id="imag13" alt="a&ntilde;adir accion" height="22" onmousedown="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccion.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag13',/*url*/'/static/admin/grm/nuevaAccionFocus.jpg')" src="/static/admin/grm/nuevaAccion.jpg" style="border: 0" width="112" class="auto-style1" />
         </tr>
 {% endif %}
-        <!-- tr>
-                <td class="auto-style10" style="height: 26px; width: 357px">Comentarios</td>
-                <td class="auto-style16" style="height: 26px" colspan="2">
-                log de comentarios donde se van acumulando las entradas del manager<br />
-                <br />
-                <textarea name="TextArea1" rows="2" style="width: 732px">nuevo comentario</textarea></td>
-        </tr -->
+        <!--tr>
+                <td class="auto-style10" style="height: 26px; width: 357px">Problema</td>
+                <td class="auto-style16" style="height: 26px" colspan="1">
+                <a href="{{bu}}problema/edit/{{pi.prob.id}}">{{ pi.prob }}</a></td>
+	        <td style="display:none;">
+                {{ pf.0.prob }}</td>
+                <td style="height: 26px">
+                <a href="{{bu}}problema/add/{{ pi.id }}/proy/" class="add_another" id="add_id_form-0-prob" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/admin/icon_addlink.gif" width="10" height="10" alt="Agregar otro/a"/></a>
+
+        </tr--!>
         <tr>
                 <td class="auto-style13" colspan="2">
                 <input type="submit" value="Guardar Cambios" />

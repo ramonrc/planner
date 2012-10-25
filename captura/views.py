@@ -1,8 +1,8 @@
-# Create your views here.
 from django.http import HttpResponse,HttpResponseRedirect
+from django.utils.html import escape
 from django.shortcuts import render_to_response,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group,User
 from django.contrib.auth import logout
 from django.template import RequestContext
 from django.core.mail import send_mail
@@ -32,7 +32,7 @@ def inicio(request): # dependiendo del grupo aque esta asignado el usuario
     custgroup = Group.objects.get(name="lider") 
     if custgroup in request.user.groups.all():
         custgroup = Group.objects.get(name="responsable")
-        if custgroup in request.user.groups.all():
+        if custgroup in request.user.groups.all(): # si es lider y responsable entra como responsable
            return render_to_response('plan/responsable.html')
         ps = proyecto.objects.filter(responsable=request.user).filter(activo=True).order_by("id")
         return render_to_response('plan/lider.html', {'ol' : ps, 'bu' : burl }, context_instance=RequestContext(request))
@@ -119,7 +119,7 @@ def adde(request):
    if request.method == 'POST':
       ed = EstrategiaForm(request.POST, request.FILES)
       if ed.is_valid():
-         correo = persona.objects.get(pk=od.cleaned_data[0]['autor'])
+         correo = persona.objects.get(pk=ed.cleaned_data[0]['autor'])
          send_mail('Aviso del planeador', 'Se le acaba de asignar una estrategia.', 'rreyes@mora.edu.mx', [correo.email])
          ed.save()
          return HttpResponseRedirect('../../')
@@ -176,8 +176,8 @@ def addm(request):
    if request.method == 'POST':
       md = MetaForm(request.POST, request.FILES)
       if md.is_valid():
-         correo = persona.objects.get(pk=od.cleaned_data[0]['autor'])
-         send_mail('Aviso del planeador', 'Se le acaba de asignar una meta', 'rreyes@mora.edu.mx', [correo.email])
+#         correo = persona.objects.get(pk=md.cleaned_data[0]['autor'])
+#         send_mail('Aviso del planeador', 'Se le acaba de asignar una meta', 'rreyes@mora.edu.mx', [correo.email])
          md.save()
          return HttpResponseRedirect('../../')
       else:
@@ -238,7 +238,7 @@ def addp(request):
          error = "<p fontcolor=\"Red\"> Se rebasa el n&uacute;mero de proyectos</p>"
          return render_to_response('plan/msg.html', {'ms' : msg, 'er' : error, 'bu' : burl }, context_instance=RequestContext(request))
       if pd.is_valid() and len(estrategia.objects.get(pk=padre).hijas()) < 6:
-         correo = persona.objects.get(pk=od.cleaned_data[0]['responsable'])
+         correo = persona.objects.get(pk=pd.cleaned_data[0]['responsable'])
          send_mail('Aviso del planeador', 'Se le acaba de asignar un proyecto.', 'rreyes@mora.edu.mx', [correo.email])
          pd.save()
          return HttpResponseRedirect('../../')
@@ -300,7 +300,7 @@ def adda(request):
          error = "<p fontcolor=\"Red\"> Se rebasa el n&uacute;mero de acciones</p>"
          return render_to_response('plan/msg.html', {'ms' : msg, 'er' : error, 'bu' : burl }, context_instance=RequestContext(request))
       elif ad.is_valid() and len(proyecto.objects.get(pk=padre).hijas()) < 6:
-         correo = persona.objects.get(pk=od.cleaned_data[0]['responsable'])
+         correo = persona.objects.get(pk=ad.cleaned_data[0]['responsable'])
          send_mail('Aviso del planeador', 'Se le acaba de asignar una accion.', 'rreyes@mora.edu.mx', [correo.email])
          ad.save()
          return HttpResponseRedirect('../../')
@@ -330,7 +330,7 @@ def edita(request, ac_id):
       ad = AccionForm(queryset=acc)
       custgroup = Group.objects.get(name="lider")
       if custgroup in request.user.groups.all():
-         return render_to_response('plan/accion_edit.html', {'af' : ad, 'lid' : True, 'bu' : burl }, context_instance=RequestContext(request))
+         return render_to_response('plan/accion_edit.html', {'af' : ad, 'lid' : True, 'prob' : acc[0].prob, 'bu' : burl }, context_instance=RequestContext(request))
       custgroup = Group.objects.get(name="responsable")
       if custgroup in request.user.groups.all():
          return render_to_response('plan/accion_edit.html', {'af' : ad, 'ai': acc[0], 'bu' : burl }, context_instance=RequestContext(request))
@@ -352,13 +352,103 @@ def delA(request, ac_id):
     ac.save()
     return HttpResponseRedirect('../../../')
 
-def opt(request):
-    custgroup = Group.objects.get(name="manager") 
-    if custgroup in request.user.groups.all():
-        ps = ['objetivo', 'meta', 'estrategia', 'proyecto']
-        return render_to_response('plan/opciones.html', {'op' : ps})
-    ps = ['accion']
-    return render_to_response('plan/opciones.html', {'op' : ps})
+@login_required(login_url = burl + "accounts/login/")
+def addpr(request, pid, elem):
+   if request.method == 'POST':
+      prf = ProblemaForm(request.POST)
+      if prf.is_valid():
+         nuevo = prf[0].save()
+         if elem == "proy":
+            objeto = proyecto.objects.get(pk=pid)
+         elif elem == "acci":
+            objeto = accion.objects.get(pk=pid)
+         elif elem == "estr":
+            objeto = estrategia.objects.get(pk=pid)
+         objeto.prob = nuevo
+         objeto.save()
+         return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>' % \
+                                (escape(nuevo._get_pk_val()), escape(nuevo)))
+      else:
+         msg = "Se produjo un error al capturar los datos:"
+         return render_to_response('plan/msg.html', {'ms' : msg, 'er' : prf.errors, 'bu' : burl }, context_instance=RequestContext(request))
+      return HttpResponseRedirect('javascript:javascript:history.go(-2)')
+   else:
+      pf = ProblemaForm(queryset=persona.objects.none())
+      return render_to_response('plan/problema.html', {'prf': pf, 'bu' : burl, 'autor' : request.user, 'fecha': datetime.date.today()}, context_instance=RequestContext(request) )
+
+@login_required(login_url = burl + "accounts/login/")
+def editpr(request, pro_id, elem, a_id):
+   if request.method == 'POST':
+      prd = ProblemaForm(request.POST, request.FILES)
+      if prd.is_valid():
+         nuevo = prd[0].save()
+            # do something.
+         if elem == "proy":
+            elemento = "proyecto"
+         elif elem == "acci":
+            objeto = accion.objects.get(pk=pid)
+         return HttpResponseRedirect(burl+'accion/edit/'+a_id+'/')
+      else:
+         msg = "Se produjo un error al capturar los datos:"
+         return render_to_response('plan/msg.html', {'ms' : msg, 'er' : prd.errors, 'bu' : burl }, context_instance=RequestContext(request))
+   else:
+      prob = problema.objects.filter(pk=pro_id)
+      prd = ProblemaForm(queryset=prob)
+      return render_to_response('plan/problema.html', {'prf' : prd, 'pi' : prob[0], 'bu' : burl }, context_instance=RequestContext(request))
+   
+@login_required(login_url = burl + "accounts/login/")
+def coment(request):
+   if request.method == 'POST':
+      prf = ComentProForm(request.POST)
+      if prf.is_valid():
+         nuevo = prf[0].save()
+         return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>' % \
+                                (escape(nuevo._get_pk_val()), escape(nuevo)))
+      else:
+         msg = "Se produjo un error al capturar los datos:"
+         return render_to_response('plan/msg.html', {'ms' : msg, 'er' : prf.errors, 'bu' : burl }, context_instance=RequestContext(request))
+      return HttpResponseRedirect('javascript:javascript:history.go(-2)')
+   else:
+      pf = ProblemaForm(queryset=persona.objects.none())
+      return render_to_response('plan/problema.html', {'prf': pf, 'bu' : burl, 'autor' : request.user, 'fecha': datetime.date.today()}, context_instance=RequestContext(request) )
+
+@login_required(login_url = burl + "accounts/login/")
+def pers(request, gr):
+    if request.method == 'POST':
+       pf = PersonaForm(request.POST)
+       raw_p = pf.cleaned_data[0]['password']
+       if pf.is_valid():
+          Persona = pf[0].save()
+          nuevo = persona.objects.get(pk=Persona.pk)
+          nuevo.password = 'sha1$'+'gorem$'+get_hex('sha1', 'gorem', raw_p)
+          if Group.objects.get(name='ejecutivo') in request.user.groups.all() and Persona:
+             nuevo.groups.add(Group.objects.get(name='manager'))
+             nuevo.is_active = True
+             nuevo.save()
+             return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>' % \
+                                    (escape(nuevo._get_pk_val()), escape(nuevo)))
+          if Group.objects.get(name='manager') in request.user.groups.all() and Persona:
+             nuevo.groups.add(Group.objects.get(name='lider'))
+             nuevo.is_active = True
+             nuevo.save()
+             return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>' % \
+                                    (escape(nuevo._get_pk_val()), escape(nuevo)))
+          if Group.objects.get(name='lider') in request.user.groups.all() and Persona:
+             nuevo.groups.add(Group.objects.get(name='responsable'))
+             nuevo.is_active = True
+             nuevo.save()
+             return HttpResponse('<script type="text/javascript">opener.dismissAddAnotherPopup(window, "%s", "%s");</script>' % \
+                                    (escape(nuevo._get_pk_val()), escape(nuevo)))
+          else: 
+             msg = "Usted no puede agregar usuarios al sistema"
+             return render_to_response('plan/msg.html', {'ms' : msg, 'bu' : burl }, context_instance=RequestContext(request))
+       else:
+          msg = "Se produjo un error al capturar los datos:"
+          return render_to_response('plan/msg.html', {'ms' : msg, 'er' : pf.errors, 'bu' : burl }, context_instance=RequestContext(request))
+       return HttpResponseRedirect('javascript:javascript:history.go(-2)')
+    else:
+       pf = PersonaForm(queryset=persona.objects.none())
+       return render_to_response('plan/persona.html', {'Pf': pf, 'bu' : burl }, context_instance=RequestContext(request) )
 
 @login_required(login_url = burl + "accounts/login/")
 def obj(request):
@@ -457,6 +547,14 @@ def acc(request):
     r += "</ul>"
     return HttpResponse(r)
 
+def opt(request):
+    custgroup = Group.objects.get(name="manager") 
+    if custgroup in request.user.groups.all():
+        ps = ['objetivo', 'meta', 'estrategia', 'proyecto']
+        return render_to_response('plan/opciones.html', {'op' : ps})
+    ps = ['accion']
+    return render_to_response('plan/opciones.html', {'op' : ps})
+
 def objetivo_edit(request, objetivo_id):
     Objetivo = objetivo.objects.get(pk=objetivo_id)
     form = objetivoFrom(request.POST or None, instance=Objetivo)
@@ -470,12 +568,6 @@ def objetivo_edit(request, objetivo_id):
                               {'objetivo_form': form,
                                'objetivo_id': objetivo_id},
                               context_instance=RequestContext(request))
-
-def adm(request):
-#    forma = Accioninline()
-#    forma = accionForm(request.POST, request.FILES)
-    
-    return render_to_response('plan/form.html', {'formset' : forma}, context_instance=RequestContext(request))
 
 def meta_edit(request, meta_id):
     Meta = meta.objects.get(pk=meta_id)
@@ -540,4 +632,9 @@ def accion_edit(request, accion_id):
                                'accion_pro': form,
                                'accion_id': accion_id},
                               context_instance=RequestContext(request))
+
+def adm(request):
+    forma = Accioninline()
+#    forma = accionForm(request.POST, request.FILES)
+    return render_to_response('plan/form.html', {'formset' : forma}, context_instance=RequestContext(request))
 

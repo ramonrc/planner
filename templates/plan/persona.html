@@ -1,0 +1,60 @@
+{% extends "plan/base.html" %}
+{% load i18n %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block content %}
+{% if Pf %}
+<div id="content-main">
+<form action="" method="post">
+{% csrf_token %}
+{{ Pf.management_form }}
+<p class="auto-style1">Nuevo Usuario{{ Pf.0.id }}</p>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<p class="auto-style8" style="width: 1020px"><br />
+<br />
+En &eacute;sta p&aacute;gina el ejecutivo podr&aacute; crear un nuevo usuario como manager. <br />
+Todos los campos son obligatorios</p>
+<table style="width: 99%; height: 253px" class="auto-style9">
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 300px">Usuario</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ Pf.0.username }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 300px">Nombre(s)</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ Pf.0.first_name }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 300px">Apellido(s)</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ Pf.0.last_name }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 300px">Correo-e</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ Pf.0.email }}</td>
+        </tr>
+        <tr>
+                <td class="auto-style10" style="height: 26px; width: 300px">Contraseña</td>
+                <td class="auto-style16" style="height: 26px" colspan="2">
+                {{ Pf.0.password }}</td>
+        </tr>
+                <td style="display:none;">
+                {{ Pf.0.last_login }}</td>
+                <td style="display:none;">
+                {{ Pf.0.date_joined }}</td>
+        <tr>
+                <td class="auto-style13" colspan="2">
+                <input type="submit" value="Guardar Cambios" />
+        </tr>
+</table>
+</form>
+</div>
+{% endif %}
+{% endblock %}

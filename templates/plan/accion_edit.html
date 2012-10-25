@@ -1,7 +1,8 @@
 {% extends "plan/base.html" %}
 {% load i18n %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% load adminmedia %}{% admin_media_prefix %}grm/dashboard.css" />
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -70,13 +71,16 @@ Los campos marcados con asterisco (*) son obligatorios </p>
         </tr>
         <tr>
 {% if lid %}
-                <td class="auto-style10" style="height: 37px; width: 357px">Responsable de la acci&oacute;n *</td>
+                <td class="auto-style10" style="height: 26px; width: 357px">Responsable de la acci&oacute;n *</td>
 {% else %}
-                <td class="auto-style10" style="height: 37px; width: 357px">Responsable de la acci&oacute;n</td>
+                <td class="auto-style10" style="height: 26px; width: 357px">Responsable de la acci&oacute;n</td>
 {% endif %}
-                <td class="auto-style16" style="height: 37px" colspan="5">
+                <td class="auto-style16" style="height: 26px" colspan="1">
 {% if lid %}
                 {{ af.0.responsable }}</td>
+                <td style="height: 26px">
+                <a href="{{bu}}persona" class="add_another" id="add_id_form-0-responsable" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/admin/icon_addlink.gif" width="10" height="10" alt="Agregar otro/a"/></a>
+
 {% else %}
                 {{ ai.responsable.get_full_name }}</td>
                 <td style="display:none;">
@@ -97,13 +101,19 @@ Los campos marcados con asterisco (*) son obligatorios </p>
         </tr>
         <tr>
 {% if lid %}
-                <td class="auto-style10" style="height: 37px; width: 357px">Fecha de cumplimiento *</td>
+                <td class="auto-style10" style="height: 26px; width: 357px">Fecha de cumplimiento *</td>
 {% else %}
-                <td class="auto-style10" style="height: 37px; width: 357px">Fecha de cumplimiento</td>
+                <td class="auto-style10" style="height: 26px; width: 357px">Fecha de cumplimiento</td>
 {% endif %}
-                <td class="auto-style16" style="height: 37px" colspan="1">
+                <td class="auto-style16" style="height: 26px" colspan="1">
 {% if lid %}
-                {{ af.0.fecha}}</td>
+                {{ af.0.fecha }}
+                </td>
+                <script>
+                        $(function() {
+                        $( "#id_form-0-fecha" ).datepicker({ dateFormat: "dd/mm/yy" });
+                });
+                </script>
 {% else %}
                 {{ ai.fecha }}</td>
                 <td style="display:none;">
@@ -112,50 +122,26 @@ Los campos marcados con asterisco (*) son obligatorios </p>
 {% endif %}
         </tr>
         <tr>
-                <td class="auto-style10" style="height: 35px; " colspan="1">Porcentaje de avance&nbsp; </td>
-                <td class="auto-style16" style="height: 37px" colspan="1">
+                <td class="auto-style10" style="height: 26px; " colspan="1">Porcentaje de avance&nbsp; </td>
+                <td class="auto-style16" style="height: 26px" colspan="1">
 		{{ af.0.avance }}</td>
         </tr>
-        <!--tr>
-                <td class="auto-style10" rowspan="3">Acciones relacionadas </td>
-                <td class="auto-style10" style="height: 35px; width: 623px" colspan="3">
-                <a href="modificacion-accion.html">acci\xc3\xb3n 1</a></td>
-                <td class="auto-style10" style="height: 35px; " colspan="2">
-                <img id="img10" alt="remover" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img10',/*url*/'button30.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img10',/*url*/'button2E.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img10',/*url*/'button2F.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img10',/*url*/'button2F.jpg')" src="button2E.jpg" style="border: 0" width="100" class="auto-style1" />
-        </tr>
         <tr>
-                <td class="auto-style10" style="height: 35px; width: 623px" colspan="3">
-                <a href="modificacion-accion.html">acci\xc3\xb3n 2</a></td>
-                <td class="auto-style10" style="height: 35px; " colspan="2">
-                <img id="img12" alt="remover" height="20" onmousedown="FP_swapImg(1,0,/*id*/'img12',/*url*/'button3C.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img12',/*url*/'button37.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img12',/*url*/'button3B.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img12',/*url*/'button3B.jpg')" src="button37.jpg" style="border: 0" width="100" class="auto-style1" />
+                <td class="auto-style10" style="height: 26px; width: 357px">Problema</td>
+                <td class="auto-style16" style="height: 26px" colspan="1">
+{% if lid %}
+                {{ prob }}</td>
+{% else %}
+                <a href="{{bu}}problema/edit/{{ai.prob.id}}/acci/{{ ai.id }}">{{ ai.prob }}</a></td>
+{% endif %}
+                <td style="display:none;">
+                {{ af.0.prob }}</td>
+{% if lid %}
+{% else %}
+                <td style="height: 26px">
+                <a href="{{bu}}problema/add/{{ ai.id }}/acci/" class="add_another" id="add_id_form-0-prob" onclick="return showAddAnotherPopup(this);"> <img src="/static/admin/img/admin/icon_addlink.gif" width="10" height="10" alt="Agregar otro/a"/></a>
+{% endif %}
         </tr>
-        <tr>
-                <td class="auto-style10" style="height: 26px; width: 357px">Comentarios</td>
-                <td class="auto-style16" style="height: 26px" colspan="5">
-                log de comentarios donde se van acumulando las entradas del manager<br />
-                <br />
-                <textarea name="TextArea1" rows="2" style="width: 732px">nuevo comentario</textarea></td>
-        </tr>
-        <tr>
-                <td class="auto-style10" style="height: 26px; width: 380px">Problemas</td>
-                <td class="auto-style16" style="height: 26px" colspan="2">
-                log de problemas donde se van acumulando las entradas<br />
-                <br />
-                <textarea name="TextArea2" rows="2" style="width: 472px">nuevo problema</textarea></td>
-                <td class="auto-style16" style="height: 26px" colspan="2">
-                <br />
-                <br />
-                <img id="img14" alt="borrar problema" height="35" onmousedown="FP_swapImg(1,0,/*id*/'img14',/*url*/'button42.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'img14',/*url*/'button40.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'img14',/*url*/'button41.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'img14',/*url*/'button41.jpg')" src="button40.jpg" style="border: 0" width="110" class="auto-style1" />
-                <td class="auto-style16" style="height: 26px; width: 158px;">
-                Severidad del problema<br />
-                <br />
-                <br />
-                <select name="Select3" style="width: 144px; height: 16px">
-                <option>Alta</option>
-                <option>Baja</option>
-                </select><br />
-                </td>
-                </tr-->
         <tr>    
                  <td style="display:none;">
                 {{ af.0.necesita }}</td>

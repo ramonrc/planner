@@ -64,7 +64,7 @@ class Met(admin.ModelAdmin):
 class Pro(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['nombre','descripcion','padre','responsable']}),
-        ('Avanzado', {'fields': ['necesita','activo'], 'classes': ['collapse']})]
+        ('Avanzado', {'fields': ['prob','necesita','activo'], 'classes': ['collapse']})]
     inlines = [ProyChoice]
     def queryset(self, request):
         custgroup = Group.objects.get(name="ejecutivo") 
@@ -76,7 +76,7 @@ class Pro(admin.ModelAdmin):
 class Act(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ['nombre','descripcion','padre','responsable','fecha','avance']}),
-        ('Avanzado', {'fields': ['necesita','activo'], 'classes': ['collapse']})]
+        ('Avanzado', {'fields': ['prob','necesita','activo'], 'classes': ['collapse']})]
     inlines = [AcciChoice]
     def queryset(self, request):
         custgroup = Group.objects.get(name="ejecutivo") 
@@ -93,4 +93,4 @@ admin.site.register(proyecto, Pro)
 admin.site.register(accion, Act)
 #admin.site.register(unidad_meta)
 admin.site.register(persona, Telefono)
-admin.site.register(telefonos_persona)
+admin.site.register(problema)

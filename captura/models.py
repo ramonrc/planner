@@ -18,7 +18,7 @@ class telefonos_persona(models.Model):
         return str(self.numero)
 
 class persona(User):
-    telefono = models.ForeignKey(telefonos_persona)
+    telefono = models.ForeignKey(telefonos_persona,blank=True,null=True,default=1)
     def __unicode__(self):
         ng = self.get_full_name() + ' |' 
         for gr in self.groups.all() : ng += " "+str(gr)
