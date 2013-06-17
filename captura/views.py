@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group,User
 from django.contrib.auth import logout
 from django.template import RequestContext
 from django.core.mail import send_mail
+from django.utils.encoding import smart_unicode
 from models import *
 from forms import *
 
@@ -115,12 +116,13 @@ def delO(request, ob_id): # deshabilita
 
 #initial=[{'name': 'Some Name'},
 #         {'name': 'Another Name'}])
+@login_required(login_url = burl + "accounts/login/")
 def adde(request):
    if request.method == 'POST':
       ed = EstrategiaForm(request.POST, request.FILES)
       if ed.is_valid():
-         correo = persona.objects.get(pk=ed.cleaned_data[0]['autor'])
-         send_mail('Aviso del planeador', 'Se le acaba de asignar una estrategia.', 'rreyes@mora.edu.mx', [correo.email])
+#         correo = persona.objects.get(pk=ed.cleaned_data[0]['autor'])
+#         send_mail('Aviso del planeador', 'Se le acaba de asignar una estrategia.', 'rreyes@mora.edu.mx', [correo.email])
          ed.save()
          return HttpResponseRedirect('../../')
       else:
@@ -168,16 +170,16 @@ def dele(request, es_id):
 @login_required(login_url = burl + "accounts/login/")
 def delE(request, es_id):
     es = estrategia.objects.get(pk=es_id)
-    es.activo = False
-    es.save()
+    #es.activo = False
+    es.delete()
     return HttpResponseRedirect('../../../')
 
 def addm(request):
    if request.method == 'POST':
       md = MetaForm(request.POST, request.FILES)
       if md.is_valid():
-#         correo = persona.objects.get(pk=md.cleaned_data[0]['autor'])
-#         send_mail('Aviso del planeador', 'Se le acaba de asignar una meta', 'rreyes@mora.edu.mx', [correo.email])
+         correo = persona.objects.get(pk=md.cleaned_data[0]['autor'])
+         send_mail('Aviso del planeador', 'Se le acaba de asignar una meta', 'rreyes@mora.edu.mx', [correo.email])
          md.save()
          return HttpResponseRedirect('../../')
       else:
@@ -225,8 +227,8 @@ def delm(request, me_id):
 @login_required(login_url = burl + "accounts/login/")
 def delM(request, me_id):
     me = meta.objects.get(pk=me_id)
-    me.activo = False
-    me.save()
+    #me.activo = False
+    me.delete()
     return HttpResponseRedirect('../../../')
 
 def addp(request):
@@ -276,10 +278,10 @@ def editp(request, pr_id):
    return HttpResponse(pr_id)
 
 def delp(request, pr_id):
-    mensaje = "Se esta procediendo a borrar la estrategia: "
+    mensaje = "Se esta procediendo a borrar el proyecto: "
     mensaje += pr_id
     anterior = "../../../"
-    borrado = burl+"estrategia/rmv/"
+    borrado = burl+"proyecto/rmv/"
     borrado += pr_id
     borrado += "/"
     return render_to_response('plan/confirm.html', {'message' : mensaje, 'prev_link' : anterior, 'action_link' : borrado, 'bu' : burl }, context_instance=RequestContext(request))
@@ -287,8 +289,8 @@ def delp(request, pr_id):
 @login_required(login_url = burl + "accounts/login/")
 def delP(request, pr_id):
     pr = proyecto.objects.get(pk=pr_id)
-    pr.activo = False
-    pr.save()
+    #pr.activo = False
+    pr.delete()
     return HttpResponseRedirect('../../../')
 
 def adda(request):
@@ -319,7 +321,7 @@ def edita(request, ac_id):
    if request.method == 'POST':
       ad = AccionForm(request.POST, request.FILES)
       if ad.is_valid():
-         send_mail('Aviso del planeador', 'Se acaba de actualizar a '+str(ad.cleaned_data[0]['avance'])+' el avance de la accion: '+str(ad.cleaned_data[0]['nombre']), 'rreyes@mora.edu.mx', ['juan@goremo.mx'])
+         send_mail('Aviso del planeador', 'Se acaba de actualizar a '+str(ad.cleaned_data[0]['avance'])+' el avance de la accion: '+str(ad.cleaned_data[0]['nombre'].encode('utf-8')), 'rreyes@mora.edu.mx', ['juan@goremo.mx'])
          ad.save()
          return HttpResponseRedirect("../../..")
       else:
@@ -348,8 +350,8 @@ def dela(request, ac_id):
 @login_required(login_url = burl + "accounts/login/")
 def delA(request, ac_id):
     ac = accion.objects.get(pk=ac_id)
-    ac.activo = False
-    ac.save()
+    #ac.activo = False
+    ac.delete()
     return HttpResponseRedirect('../../../')
 
 @login_required(login_url = burl + "accounts/login/")
@@ -386,7 +388,7 @@ def editpr(request, pro_id, elem, a_id):
          if elem == "proy":
             elemento = "proyecto"
          elif elem == "acci":
-            objeto = accion.objects.get(pk=pid)
+            objeto = accion.objects.get(pk=a_id)
          return HttpResponseRedirect(burl+'accion/edit/'+a_id+'/')
       else:
          msg = "Se produjo un error al capturar los datos:"
@@ -413,7 +415,7 @@ def coment(request):
       return render_to_response('plan/problema.html', {'prf': pf, 'bu' : burl, 'autor' : request.user, 'fecha': datetime.date.today()}, context_instance=RequestContext(request) )
 
 @login_required(login_url = burl + "accounts/login/")
-def pers(request, gr):
+def pers(request):
     if request.method == 'POST':
        pf = PersonaForm(request.POST)
        raw_p = pf.cleaned_data[0]['password']
@@ -486,13 +488,13 @@ def obj(request):
                         r += "</i>"
                   r += "</ul></li>"
                   if not po.activo:
-                     r += "<i>"
+                     r += "</i>"
                r += "</ul></li>"
                if not eo.activo:
-                  r += "<i>"
+                  r += "</i>"
             r += "</ul></li>"
             if not mo.activo:
-               r += "<i>"
+               r += "</i>"
         r += "</ul></li>"
         if not o.activo:
            r += "</i>"

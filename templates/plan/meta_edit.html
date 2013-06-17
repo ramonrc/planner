@@ -57,14 +57,14 @@ Los campos marcados con asterisco (*) son obligatorios </p>
 		{{ mf.0.unidad }}</td>
 	</tr> 
 	<tr>
-		<td class="auto-style10" style="height: 35px; " rowspan="3">Estrategias relacionadas *</td>
+		<td class="auto-style10" style="height: 35px; " rowspan="10">Estrategias relacionadas *</td>
 		{% for estr in mh %}
-		<td class="auto-style16" style="height: 35px; width: 582px">
-		<a href="{{bu}}estrategia/edit/{{estr.id}}/">{{ estr.nombre }}</a></td>
-		<td class="auto-style16" style="height: 35px; ">
-                <a href="{{bu}}estrategia/rm/{{estr.id}}/"><img id="imag{{ ob.id }}" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
+			<td class="auto-style16" style="height: 35px; width: 582px">
+			<a href="{{bu}}estrategia/edit/{{estr.id}}/">{{ estr.nombre }}</a></td>
+			<td class="auto-style16" style="height: 35px; ">
+                	<a href="{{bu}}estrategia/rm/{{estr.id}}/"><img id="imag{{ ob.id }}" alt="cancelar" height="16" onmousedown="FP_swapImg(1,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarPress.jpg')" onmouseout="FP_swapImg(0,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrar.jpg')" onmouseover="FP_swapImg(1,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" onmouseup="FP_swapImg(0,0,/*id*/'imag{{ ob.id }}',/*url*/'/static/admin/grm/borrarFocus.jpg')" src="/static/admin/grm/borrar.jpg" style="border: 0" width="80" /></a></td>
+		</tr>
 		{% endfor %}
-	</tr>
 	<tr>
 		<td class="auto-style17" style="height: 35px; " colspan="2">
 		<a href="{{bu}}estrategia/add/">

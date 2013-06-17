@@ -31,7 +31,7 @@ class Obj(admin.ModelAdmin):
         obj.save()
     def save_formset(self, request, form, formset, change): 
         if not hasattr(instance,'autor'):
-            instance.descripcion = request.user.pk
+            instance.autor = request.user.pk
         instance.save()
         return formset.save()
     def queryset(self, request):

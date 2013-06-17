@@ -63,18 +63,7 @@ class objetivo(models.Model):
     autor = models.ForeignKey(persona,verbose_name='Responsable')
     activo = models.BooleanField(default=True)
     def hijas(self):
-        from django.db import connection
-        cursor = connection.cursor()
-        cursor.execute("""
-            SELECT DISTINCT id 
-            FROM captura_meta 
-            WHERE padre_id = %s AND activo = True
-            """, [self.id])
-        results = []
-        for oll in cursor.fetchall():
-                for no in meta.objects.filter(pk=oll[0]):
-                    results.append(no)
-        return results
+        return meta.objects.filter(padre=self).order_by('id')
     def semaforo(self):
         from django.db import connection
         cursor = connection.cursor()
@@ -108,18 +97,7 @@ class meta(models.Model):
     descripcion = models.CharField(max_length=2000,blank=True,verbose_name='Descripcion')
     activo = models.BooleanField(default=True)
     def hijas(self):
-        from django.db import connection
-        cursor = connection.cursor()
-        cursor.execute("""
-            SELECT DISTINCT id 
-            FROM captura_estrategia
-            WHERE padre_id = %s AND activo = True
-            """, [self.id])
-        results = []
-        for oll in cursor.fetchall():
-                for no in estrategia.objects.filter(pk=oll[0]):
-                    results.append(no)
-        return results
+        return estrategia.objects.filter(padre=self).order_by('id')
     def avance (self):
         from django.db import connection
         cursor = connection.cursor()
@@ -168,18 +146,7 @@ class estrategia(models.Model):
     prob = models.ForeignKey(problema,blank=True,null=True,verbose_name='Problema')
     activo = models.BooleanField(default=True)
     def hijas(self):
-        from django.db import connection
-        cursor = connection.cursor()
-        cursor.execute("""
-            SELECT DISTINCT id 
-            FROM captura_proyecto
-            WHERE padre_id = %s AND activo = True
-            """, [self.id])
-        results = []
-        for oll in cursor.fetchall():
-                for no in proyecto.objects.filter(pk=oll[0]):
-                    results.append(no)
-        return results
+        return proyecto.objects.filter(padre=self).order_by('id')
     def coments(self):
         from django.db import connection
         cursor = connection.cursor()
@@ -224,18 +191,7 @@ class proyecto(models.Model):
     activo = models.BooleanField(default=True)
     prob = models.ForeignKey(problema,blank=True,null=True,verbose_name='Problema')
     def hijas(self):
-        from django.db import connection
-        cursor = connection.cursor()
-        cursor.execute("""
-            SELECT DISTINCT id 
-            FROM captura_accion
-            WHERE padre_id = %s AND activo = True
-            """, [self.id])
-        results = []
-        for oll in cursor.fetchall():
-                for no in accion.objects.filter(pk=oll[0]):
-                    results.append(no)
-        return results
+        return accion.objects.filter(padre=self).order_by('id')
     def necesario(self):
         from django.db import connection
         cursor = connection.cursor()
@@ -302,7 +258,7 @@ class proyecto(models.Model):
         return self.nombre
 
 class accion(models.Model):
-    nombre = models.CharField(max_length=255,unique=True,verbose_name='Definicion')
+    nombre = models.CharField(max_length=255,verbose_name='Definicion')
     padre = models.ForeignKey(proyecto,verbose_name='Proyecto padre')
     fecha = models.DateField('fecha de cumplimiento')
     inicio = models.DateField('fecha de inicio',blank=True,default=datetime.date.today(),editable=False)
@@ -341,7 +297,7 @@ class accion(models.Model):
     def semaforo(self):
         delta = datetime.date.today()-self.inicio
         total = self.fecha-self.inicio 
-        if ((self.avance < 50) and (float(delta.total_seconds()) < float(total.total_seconds())*0.8)) or (self.prob == "A"):
+        if ((self.avance < 50) and (float(delta.total_seconds()) > float(total.total_seconds())*0.8)) or (self.prob == "A"):
             return "rojo"
         if (float(total.total_seconds())*self.avance/100 > float(delta.total_seconds())) or (not self.prob == "B"):
             return "verde"
